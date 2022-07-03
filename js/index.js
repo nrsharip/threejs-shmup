@@ -52,21 +52,21 @@ Ammo().then(function ( AmmoLib ) {
 
     // Loading GLTFs
     const gridCell = new Vector2(0, 0);
-    GLTFS.queueFileNames("assets/3d/foodKit_v1.2/Models/GLTF/", glbs, function(filename, gltf) {
+    GLTFS.queueFileNames("assets/3d/spacekit_2/Models/GLTF format/", glbs, function(filename, gltf) {
         // console.log(`GLTF ${filename}: `);
         // console.log(gltf);
 
         MESH.centerObject3D(gltf.scene);
-        gltf.scene.position.x = gridCell.x;
+        gltf.scene.position.x = gridCell.x * 3;
         gltf.scene.position.y = gltf.scene.userData.center.y + 0.05 + 0.1;
-        gltf.scene.position.z = gridCell.y;
+        gltf.scene.position.z = gridCell.y * 3;
         gltf.scene.userData.boundingBox.getSize(UTILS.tmpV1);
         gltf.scene.userData.onCollision = function(that) {
-            if (that && that.userData) {
-                if (that.userData?.name == "ground") {
-                    PHYSICS.applyCentralForce(gltf.scene, UTILS.tmpV1.set(0, 200, 0));
-                }
-            }
+            // if (that && that.userData) {
+            //     if (that.userData?.name == "ground") {
+            //         PHYSICS.applyCentralForce(gltf.scene, UTILS.tmpV1.set(0, 200, 0));
+            //     }
+            // }
         }
 
         PHYSICS.addObject(gltf.scene, 10, UTILS.tmpV1, 0.05);
@@ -86,19 +86,19 @@ function render(timeElapsed) {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
         case GAME.PHASES.PAUSED:
-            for (let gltf of Object.values(GLTFS.loaded)) {
-                gltf.scene.rotation.y += timeDelta * (Math.PI / 2);
-            }
+            // for (let gltf of Object.values(GLTFS.loaded)) {
+            //     gltf.scene.rotation.y += timeDelta * (Math.PI / 2);
+            // }
             break;
         case GAME.PHASES.STARTED:
             PHYSICS.update(timeDelta);
 
-            for (let gltf of Object.values(GLTFS.loaded)) {
-                if (gltf.scene.position.y < -3) {
-                    PHYSICS.setLinearAndAngularVelocity(gltf.scene, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
-                    PHYSICS.makeTranslationAndRotation(gltf.scene, UTILS.tmpV1.set(0,3,0), UTILS.tmpQuat1.identity());
-                }
-            }
+            // for (let gltf of Object.values(GLTFS.loaded)) {
+            //     if (gltf.scene.position.y < -3) {
+            //         PHYSICS.setLinearAndAngularVelocity(gltf.scene, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
+            //         PHYSICS.makeTranslationAndRotation(gltf.scene, UTILS.tmpV1.set(0,3,0), UTILS.tmpQuat1.identity());
+            //     }
+            // }
             break;
     }
 
