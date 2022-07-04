@@ -98,6 +98,11 @@ function applyCentralForce(obj3d, force) {
     obj3d.userData.rigidBody.applyCentralForce(tmpBtVector1);
 }
 
+function clearForces(obj3d) {
+    if (!obj3d) { console.log("applyCentralForce: no object3D"); return; }
+    obj3d.userData.rigidBody.clearForces();
+}
+
 function makeTranslation(obj3d, position) {
     if (!obj3d) { return; }
     const rigidBody = obj3d.userData.rigidBody;
@@ -303,7 +308,8 @@ export {
     update,
     
     applyCentralForce,
-    
+    clearForces,
+
     makeTranslation,
     makeRotation,
     makeTranslationAndRotation,

@@ -124,6 +124,10 @@ function render(timeElapsed) {
         }
     }
 
+    let available = GAME.instances["ammo_machinegun.glb"]?.available.length;
+    let inuse = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
+    MENU.get("info").textContent = `inuse: ${inuse} available: ${available}`;
+
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
         case GAME.PHASES.PAUSED:
@@ -140,6 +144,13 @@ function render(timeElapsed) {
             //         PHYSICS.makeTranslationAndRotation(gltf.scene, UTILS.tmpV1.set(0,3,0), UTILS.tmpQuat1.identity());
             //     }
             // }
+
+            for (let obj3d of GAME.instances["ammo_machinegun.glb"]?.inuse) {
+                if (obj3d.position.z < -20) { 
+                    PHYSICS.removeRigidBody(obj3d);
+                    GAME.instances.releaseInstance(obj3d); 
+                }
+            }
             break;
     }
 
@@ -223,8 +234,10 @@ function whilemousedown(event) {
                     let obj3d = GAME.instances.acquireInstance("ammo_machinegun.glb");
                     PHYSICS.addRigidBody(obj3d);
                     PHYSICS.setLinearAndAngularVelocity(obj3d, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
+                    PHYSICS.clearForces();
                     UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - speeder.userData.center.z - 0.1);
                     PHYSICS.makeTranslationAndRotation(obj3d, UTILS.tmpV1, UTILS.tmpQuat1.identity());
+
                     scene.add( obj3d );
         
                     PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));
