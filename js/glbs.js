@@ -7,10 +7,10 @@
 // (see also https://stackoverflow.com/questions/43577528/visual-studio-code-search-and-replace-with-regular-expressions)
 
 export const craft = [ //"../../../"cube.glb","
-    "craft_cargoA.glb",     
-    "craft_cargoB.glb",     
+    // "craft_cargoA.glb",     
+    // "craft_cargoB.glb",     
     "craft_miner.glb",
-    "craft_racer.glb",      
+    // "craft_racer.glb",      
     "craft_speederA.glb",   
     "craft_speederB.glb",
     "craft_speederC.glb",   
