@@ -5,7 +5,7 @@ let dispatcher;
 let broadphase;
 let constraintSolver;
 let dynamicsWorld;
-let objects = [];
+let obj3ds = [];
 
 let tmpBtTransform1;
 let tmpBtVector1;
@@ -79,16 +79,16 @@ function init() {
     tmpBtVector1 = new Ammo.btVector3( 0, 0, 0 );
 }
 
-function addObject(object, mass, dimensions, margin) {
+function addObject(obj3d, mass, dimensions, margin) {
     const shape = new Ammo.btBoxShape( new Ammo.btVector3( dimensions.x * 0.5, dimensions.y * 0.5, dimensions.z * 0.5 ) );
     shape.setMargin( margin ); // 0.05
-    let rb = createRigidBody(object, shape, mass, null, null, null, null);
+    let rb = createRigidBody(obj3d, shape, mass, null, null, null, null);
 
     // this is a special trick to have a pointer from Bullet rigid body object
     // back to three.js object3d. We create native btVector3, then adding the 
     // threeObject property and placing it back to rigid body as user pointer
     const btVecUserData = new Ammo.btVector3( 0, 0, 0 );
-    btVecUserData.threeObject = object;
+    btVecUserData.threeObject = obj3d;
     rb.setUserPointer( btVecUserData );
 }
 
@@ -194,9 +194,9 @@ function getOriginAndRotation(object, origin, rotation) {
 }
 
 // https://github.com/mrdoob/three.js/blob/36d88b4518de31125c7fda6a36ff8f5f524d97f7/examples/physics_ammo_break.html#L312
-function createRigidBody( object, shape, mass, pos, quat, vel, angVel ) {
-    if ( pos ) { object.position.copy( pos ); } else { pos = object.position; }
-    if ( quat ) { object.quaternion.copy( quat ); } else { quat = object.quaternion; }
+function createRigidBody( obj3d, shape, mass, pos, quat, vel, angVel ) {
+    if ( pos ) { obj3d.position.copy( pos ); } else { pos = obj3d.position; }
+    if ( quat ) { obj3d.quaternion.copy( quat ); } else { quat = obj3d.quaternion; }
 
     const transform = new Ammo.btTransform();
     transform.setIdentity();
@@ -215,11 +215,11 @@ function createRigidBody( object, shape, mass, pos, quat, vel, angVel ) {
     if ( vel ) { rigidBody.setLinearVelocity( new Ammo.btVector3( vel.x, vel.y, vel.z ) ); }
     if ( angVel ) { rigidBody.setAngularVelocity( new Ammo.btVector3( angVel.x, angVel.y, angVel.z ) ); }
 
-    object.userData.rigidBody = rigidBody;
-    object.userData.collided = false;
+    obj3d.userData.rigidBody = rigidBody;
+    obj3d.userData.collided = false;
 
     if ( mass > 0 ) {
-        objects.push( object );
+        obj3ds.push( obj3d );
         // Disable deactivation
         rigidBody.setActivationState( 4 );
     }
@@ -233,12 +233,12 @@ function update( deltaTime ) {
     // Step world
     dynamicsWorld.stepSimulation( deltaTime, 10 );
     
-    for (let object of objects) {
-        getOriginAndRotation(object, UTILS.tmpV1, UTILS.tmpQuat1)
+    for (let obj3d of obj3ds) {
+        getOriginAndRotation(obj3d, UTILS.tmpV1, UTILS.tmpQuat1)
 
-        object.position.set( UTILS.tmpV1.x, UTILS.tmpV1.y, UTILS.tmpV1.z );
-        object.quaternion.set( UTILS.tmpQuat1.x, UTILS.tmpQuat1.y, UTILS.tmpQuat1.z, UTILS.tmpQuat1.w );
-        object.userData.collided = false;
+        obj3d.position.set( UTILS.tmpV1.x, UTILS.tmpV1.y, UTILS.tmpV1.z );
+        obj3d.quaternion.set( UTILS.tmpQuat1.x, UTILS.tmpQuat1.y, UTILS.tmpQuat1.z, UTILS.tmpQuat1.w );
+        obj3d.userData.collided = false;
     }
 
     for (let i = 0; i < dispatcher.getNumManifolds(); i++) {

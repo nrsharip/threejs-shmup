@@ -24,6 +24,14 @@ const state = {
     get phase() { return this._phase; }
 };
 
+const isntances = {
+    add(filename, instance) {
+        if (!this[filename]) { this[filename] = []; }
+        this[filename].push(instance);
+        return instance;
+    },
+}
+
 const models = {
     add(filename, model) {
         this[filename] = model;
@@ -33,9 +41,10 @@ const models = {
     getInstanceOf(filename) { 
         let model = this[filename];
         if (model && (model instanceof THREE.Object3D)) {
-            return MESH.centerObject3D(model.clone(true));
+            let obj3d = model.clone(true);
+            return MESH.centerObject3D(isntances.add(filename, obj3d));
         } 
     }
 }
 
-export { PHASES, state, models }
+export { PHASES, state, models, isntances }

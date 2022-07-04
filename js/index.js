@@ -42,7 +42,7 @@ Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
 
     PHYSICS.init();
-    PHYSICS.dynamicsWorld.setGravity( new Ammo.btVector3( 0, -9.8, 0 ) );
+    PHYSICS.dynamicsWorld.setGravity( new Ammo.btVector3( 0, 0, 0 ) );
 
     // SCENE OBJECTS
     const dirLight = GRAPHICS.setupDirLight();
@@ -98,7 +98,12 @@ function render(timeElapsed) {
     for (let intersect of intersects) {
         // [ { distance, point, face, faceIndex, object }, ... ]
         let name = intersect.object?.userData?.name;
-        if (name && name == "ground") { console.log(intersect.point); }
+        if (name && name == "ground") { 
+            console.log(intersect.point); 
+        
+            let obj3d = GAME.isntances["craft_speederD.glb"][0];
+            PHYSICS.makeTranslation(obj3d, intersect.point);
+        }
     }
 
     switch (GAME.state.phase) {
