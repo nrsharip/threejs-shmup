@@ -57,6 +57,8 @@ function centerObject3D(object) {
         // and object centered to origin
         child.position.sub(object["userData"].center);
     };
+
+    return object;
 }
 
 export { calculateBoundingBoxAndCenter, centerObject3D }

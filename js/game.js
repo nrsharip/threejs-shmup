@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import * as MESH from './mesh.js'
+
 const PHASES = {
     INIT: 1,
     STARTED: 2,
@@ -21,4 +24,18 @@ const state = {
     get phase() { return this._phase; }
 };
 
-export { PHASES, state }
+const models = {
+    add(filename, model) {
+        this[filename] = model;
+    },
+
+    // https://threejs.org/docs/#api/en/core/Object3D
+    getInstanceOf(filename) { 
+        let model = this[filename];
+        if (model && (model instanceof THREE.Object3D)) {
+            return MESH.centerObject3D(model.clone(true));
+        } 
+    }
+}
+
+export { PHASES, state, models }

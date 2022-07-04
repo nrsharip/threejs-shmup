@@ -22,6 +22,7 @@ if ( !WebGLCheck.isWebGLAvailable() ) {
     throw new Error(warning.textContent);
 }
 
+window.GAME = GAME;
 GAME.state.phase = GAME.PHASES.INIT;
 
 const clock = new THREE.Clock();
@@ -56,23 +57,25 @@ Ammo().then(function ( AmmoLib ) {
         // console.log(`GLTF ${filename}: `);
         // console.log(gltf);
 
-        MESH.centerObject3D(gltf.scene);
-        gltf.scene.position.x = gridCell.x * 3;
-        gltf.scene.position.y = gltf.scene.userData.center.y + 0.05 + 0.1;
-        gltf.scene.position.z = gridCell.y * 3;
-        gltf.scene.userData.boundingBox.getSize(UTILS.tmpV1);
-        gltf.scene.userData.onCollision = function(that) {
-            // if (that && that.userData) {
-            //     if (that.userData?.name == "ground") {
-            //         PHYSICS.applyCentralForce(gltf.scene, UTILS.tmpV1.set(0, 200, 0));
-            //     }
-            // }
+        GAME.models.add(filename, gltf.scene);
+
+        for (let i = 0; i < 5; i++) {
+            let obj3d = GAME.models.getInstanceOf(filename);
+            obj3d.position.x = gridCell.x * 3;
+            obj3d.position.y = obj3d.userData.center.y + 0.05 + 0.1;
+            obj3d.position.z = gridCell.y * 3;
+            obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
+            obj3d.userData.onCollision = function(other) {
+                // if (other && other.userData) {
+                //     if (other.userData?.name == "ground") {
+                //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
+                //     }
+                // }
+            }
+            PHYSICS.addObject(obj3d, 10, UTILS.tmpV1, 0.05);
+            scene.add( obj3d );
+            UTILS.spiralGetNext(gridCell);
         }
-
-        PHYSICS.addObject(gltf.scene, 10, UTILS.tmpV1, 0.05);
-        scene.add( gltf.scene );
-
-        UTILS.spiralGetNext(gridCell);
     });
 
     requestAnimationFrame( render );
