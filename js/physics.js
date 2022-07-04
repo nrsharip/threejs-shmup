@@ -79,7 +79,7 @@ function init() {
     tmpBtVector1 = new Ammo.btVector3( 0, 0, 0 );
 }
 
-function addObject(obj3d, mass, dimensions, margin) {
+function initObject(obj3d, mass, dimensions, margin) {
     const shape = new Ammo.btBoxShape( new Ammo.btVector3( dimensions.x * 0.5, dimensions.y * 0.5, dimensions.z * 0.5 ) );
     shape.setMargin( margin ); // 0.05
     let rb = createRigidBody(obj3d, shape, mass, null, null, null, null);
@@ -93,7 +93,7 @@ function addObject(obj3d, mass, dimensions, margin) {
 }
 
 function applyCentralForce(obj3d, force) {
-    if (!obj3d) { return; }
+    if (!obj3d) { console.log("applyCentralForce: no object3D"); return; }
     tmpBtVector1.setValue(force.x, force.y, force.z);
     obj3d.userData.rigidBody.applyCentralForce(tmpBtVector1);
 }
@@ -229,13 +229,33 @@ function createRigidBody( obj3d, shape, mass, pos, quat, vel, angVel ) {
     obj3d.userData.collided = false;
 
     if ( mass > 0 ) {
-        obj3ds.push( obj3d );
         // Disable deactivation
         rigidBody.setActivationState( 4 );
     }
-
-    dynamicsWorld.addRigidBody( rigidBody );
     return rigidBody;
+}
+
+function addRigidBody(obj3d) {
+    if (!obj3d) { return; }
+    let rigidBody = obj3d.userData.rigidBody;
+
+    if (!rigidBody) { return; }
+
+    obj3ds.push( obj3d );
+
+    dynamicsWorld.addRigidBody(rigidBody);
+}
+
+function removeRigidBody(obj3d) {
+    if (!obj3d) { return; }
+    let rigidBody = obj3d.userData.rigidBody;
+
+    if (!rigidBody) { return; }
+
+    const index = obj3ds.indexOf(obj3ds);
+    if (index > -1) { obj3ds.splice(index, 1); }
+
+    dynamicsWorld.removeRigidBody(rigidBody);
 }
 
 // https://github.com/mrdoob/three.js/blob/36d88b4518de31125c7fda6a36ff8f5f524d97f7/examples/physics_ammo_break.html#L454
@@ -276,8 +296,10 @@ export {
     constraintSolver,
     dynamicsWorld,
     init,
-    addObject,
+    initObject,
     createRigidBody,
+    addRigidBody,
+    removeRigidBody,
     update,
     
     applyCentralForce,

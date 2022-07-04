@@ -29,9 +29,9 @@ const clock = new THREE.Clock();
 
 // GRAPHICS INIT
 const renderer = GRAPHICS.setupRenderer('#mainCanvas');
-const camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', new Vector3(0, 30, 0), new Vector3(0, 0, 0));
+const camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', new Vector3(0, 30, 20), new Vector3(0, 0, 0));
 const scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
-const orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
+//const orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
 
 // Controls
 const raycaster = new THREE.Raycaster();
@@ -49,11 +49,12 @@ Ammo().then(function ( AmmoLib ) {
     scene.add(dirLight);
     
     // GROUND
-    let w = 15, h = 0.1, d = 15;
+    let w = 60, h = 0.1, d = 15;
     const ground = PRIMITIVES.makeGround(w, h, d);
-    ground["userData"].name = "ground";
+    ground["userData"].filename = "ground";
 
-    PHYSICS.addObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
+    PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
+    PHYSICS.addRigidBody(ground);
     scene.add(ground);
 
     // Loading GLTFs
@@ -61,14 +62,16 @@ Ammo().then(function ( AmmoLib ) {
     GLTFS.queueFileNames([ GLBS.craft, GLBS.ammo ], function(filename, gltf) {
         // console.log(`GLTF ${filename}: `);
         // console.log(gltf);
-
         GAME.models.add(filename, gltf.scene);
 
-        for (let i = 0; i < 5; i++) {
-            let obj3d = GAME.models.getInstanceOf(filename);
+        if (filename == "craft_speederD.glb") { 
+            GAME.models.createInstances("craft_speederD.glb", 1);
+
+            let obj3d = GAME.instances.acquireInstance(filename);
             obj3d.position.x = gridCell.x * 3;
             obj3d.position.y = obj3d.userData.center.y + 0.05 + 0.1;
             obj3d.position.z = gridCell.y * 3;
+
             obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
             obj3d.userData.onCollision = function(other) {
                 // if (other && other.userData) {
@@ -77,9 +80,24 @@ Ammo().then(function ( AmmoLib ) {
                 //     }
                 // }
             }
-            PHYSICS.addObject(obj3d, 10, UTILS.tmpV1, 0.05);
+            PHYSICS.initObject(obj3d, 1000, UTILS.tmpV1, 0.05);
+            PHYSICS.addRigidBody(obj3d);
             scene.add( obj3d );
             UTILS.spiralGetNext(gridCell);
+        }
+        if (filename == "ammo_machinegun.glb") { 
+            GAME.models.createInstances("ammo_machinegun.glb", 1000);
+            for (let obj3d of GAME.instances["ammo_machinegun.glb"].available) {
+                obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
+                // obj3d.userData.onCollision = function(other) {
+                //     // if (other && other.userData) {
+                //     //     if (other.userData?.name == "ground") {
+                //     //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
+                //     //     }
+                //     // }
+                // }
+                PHYSICS.initObject(obj3d, 1, UTILS.tmpV1, 0.05);
+            }
         }
     });
 
@@ -94,14 +112,14 @@ function render(timeElapsed) {
     // https://threejs.org/docs/#api/en/core/Raycaster
     intersects.length = 0; // clearing the array
     raycaster.setFromCamera( pointer, camera );
-	raycaster.intersectObjects( scene.children, false, intersects);
+    raycaster.intersectObjects( scene.children, false, intersects);
     for (let intersect of intersects) {
         // [ { distance, point, face, faceIndex, object }, ... ]
-        let name = intersect.object?.userData?.name;
+        let name = intersect.object?.userData?.filename;
         if (name && name == "ground") { 
-            console.log(intersect.point); 
+            //console.log(intersect.point); 
         
-            let obj3d = GAME.isntances["craft_speederD.glb"][0];
+            let obj3d = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
             PHYSICS.makeTranslation(obj3d, intersect.point);
         }
     }
@@ -175,10 +193,60 @@ function processPause() {
 // https://threejs.org/docs/#api/en/core/Raycaster
 window.addEventListener( 'pointermove', onPointerMove );
 function onPointerMove( event ) {
-	// calculate pointer position in normalized device coordinates (-1 to +1) for both components
-	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // calculate pointer position in normalized device coordinates (-1 to +1) for both components
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
+
+// https://stackoverflow.com/questions/15505272/javascript-while-mousedown
+var mousedownID = -1;  //Global ID of mouse down interval
+function mousedown(event) {
+    if(mousedownID == -1)  { //Prevent multimple loops!
+        mousedownID = setInterval(whilemousedown, 20 /*execute every 100ms*/, event);
+    }
+}
+function mouseup(event) {
+    if(mousedownID!=-1) {  //Only stop if exists
+        clearInterval(mousedownID);
+        mousedownID=-1;
+    }
+}
+function whilemousedown(event) {
+    switch (GAME.state.phase) {
+        case GAME.PHASES.INIT:
+            break;
+        case GAME.PHASES.STARTED:
+            switch(event.button) {
+                case 0:
+                    let speeder = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
+
+                    let obj3d = GAME.instances.acquireInstance("ammo_machinegun.glb");
+                    PHYSICS.addRigidBody(obj3d);
+                    PHYSICS.setLinearAndAngularVelocity(obj3d, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
+                    UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - speeder.userData.center.z - 0.1);
+                    PHYSICS.makeTranslationAndRotation(obj3d, UTILS.tmpV1, UTILS.tmpQuat1.identity());
+                    scene.add( obj3d );
+        
+                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));
+                    break;
+                case 1:
+                    console.log("MIDDLE MOUSE BUTTON");
+                    break;
+                case 2:
+                    console.log("RIGHT MOUSE BUTTON");
+                    break;
+            }
+            break;
+        case GAME.PHASES.PAUSED:
+
+            break;
+    }
+}
+//Assign events
+document.addEventListener("mousedown", mousedown);
+document.addEventListener("mouseup", mouseup);
+//Also clear the interval when user leaves the window with mouse
+document.addEventListener("mouseout", mouseup);
 
 // // HELPERS
 // // see https://threejs.org/manual/#en/lights
