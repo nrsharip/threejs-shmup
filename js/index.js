@@ -38,6 +38,15 @@ const raycaster = new THREE.Raycaster();
 const intersects = [];
 const pointer = new THREE.Vector2();
 
+// Sounds
+// https://threejs.org/docs/#api/en/audio/Audio
+// create an AudioListener and add it to the camera
+const listener = new THREE.AudioListener();
+camera.add( listener );
+// create a global audio source
+const sounds = []; 
+for (let i = 0; i < 50; sounds.push(new THREE.PositionalAudio( listener )), i++);
+
 Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
 
@@ -98,6 +107,19 @@ Ammo().then(function ( AmmoLib ) {
                 // }
                 PHYSICS.initObject(obj3d, 1, UTILS.tmpV1, 0.05);
             }
+        }
+    });
+
+    // Loading Sounds
+    // https://threejs.org/docs/#api/en/audio/Audio
+    // load a sound and set it as the Audio object's buffer
+    const audioLoader = new THREE.AudioLoader();
+    // https://freesound.org/people/greatmganga/sounds/122103/
+    audioLoader.load( 'assets/audio/122103__greatmganga__dshk-01.wav', function( buffer ) {
+        for (let sound of sounds) {
+            sound.setBuffer( buffer );
+            sound.setLoop( false );
+            sound.setVolume( 10 );
         }
     });
 
@@ -213,7 +235,7 @@ function onPointerMove( event ) {
 var mousedownID = -1;  //Global ID of mouse down interval
 function mousedown(event) {
     if(mousedownID == -1)  { //Prevent multimple loops!
-        mousedownID = setInterval(whilemousedown, 20 /*execute every 100ms*/, event);
+        mousedownID = setInterval(whilemousedown, 50 /*execute every 100ms*/, event);
     }
 }
 function mouseup(event) {
@@ -222,6 +244,8 @@ function mouseup(event) {
         mousedownID=-1;
     }
 }
+
+let soundCount = 0;
 function whilemousedown(event) {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
@@ -231,16 +255,18 @@ function whilemousedown(event) {
                 case 0:
                     let speeder = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
 
+                    sounds[soundCount++ % sounds.length].play();
+
                     let obj3d = GAME.instances.acquireInstance("ammo_machinegun.glb");
                     PHYSICS.addRigidBody(obj3d);
                     PHYSICS.setLinearAndAngularVelocity(obj3d, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
-                    PHYSICS.clearForces();
+                    PHYSICS.clearForces(obj3d);
                     UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - speeder.userData.center.z - 0.1);
                     PHYSICS.makeTranslationAndRotation(obj3d, UTILS.tmpV1, UTILS.tmpQuat1.identity());
-
+                    
                     scene.add( obj3d );
         
-                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));
+                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));                    
                     break;
                 case 1:
                     console.log("MIDDLE MOUSE BUTTON");
