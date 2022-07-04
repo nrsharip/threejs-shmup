@@ -4,17 +4,17 @@ import { GLTFLoader } from 'https://unpkg.com/three@0.142.0/examples/jsm/loaders
 const loaded = {}
 const loader = new GLTFLoader(); // see https://threejs.org/docs/index.html#manual/en/introduction/Loading-3D-models
 
-function queueFileNames(folders, onLoad) {
-    for (let folder of folders) {
-        for (let filename of folder.filenames) {
-            loader.load( `${folder.prefix}${filename}`, onGLTFLoad(filename, onLoad), undefined, function ( error ) {
+function queueFileNames(groups, onFileload) {
+    for (let group of groups) {
+        for (let filename of group.filenames) {
+            loader.load( `${group.prefix}${filename}`, onGLTFLoad(filename, group, onFileload), undefined, function ( error ) {
                 throw new Error("Error while loading the file: " + filename + ", error: " + error);
             });
         }
     }
 }
 
-function onGLTFLoad(filename, onLoad) {
+function onGLTFLoad(filename, group, onFileload) {
     return function ( gltf ) {
         loaded[filename] = gltf;
 
@@ -34,7 +34,8 @@ function onGLTFLoad(filename, onLoad) {
             })
         }
         
-        onLoad(filename, gltf);
+        group?.onFileload?.(filename, gltf);
+        onFileload(filename, gltf);
     }
 }
 
