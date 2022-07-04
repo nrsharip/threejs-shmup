@@ -92,13 +92,15 @@ function addObject(obj3d, mass, dimensions, margin) {
     rb.setUserPointer( btVecUserData );
 }
 
-function applyCentralForce(object, force) {
+function applyCentralForce(obj3d, force) {
+    if (!obj3d) { return; }
     tmpBtVector1.setValue(force.x, force.y, force.z);
-    object.userData.rigidBody.applyCentralForce(tmpBtVector1);
+    obj3d.userData.rigidBody.applyCentralForce(tmpBtVector1);
 }
 
-function makeTranslation(object, position) {
-    const rigidBody = object.userData.rigidBody;
+function makeTranslation(obj3d, position) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     const motionState = rigidBody.getMotionState();
     
     if ( motionState ) {
@@ -109,8 +111,9 @@ function makeTranslation(object, position) {
     }
 }
 
-function makeRotation(object, rotation) {
-    const rigidBody = object.userData.rigidBody;
+function makeRotation(obj3d, rotation) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     const motionState = rigidBody.getMotionState();
 
     if ( motionState ) {
@@ -121,8 +124,9 @@ function makeRotation(object, rotation) {
     }
 }
 
-function makeTranslationAndRotation(object, position, rotation) {
-    const rigidBody = object.userData.rigidBody;
+function makeTranslationAndRotation(obj3d, position, rotation) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     const motionState = rigidBody.getMotionState();
 
     if ( motionState ) {
@@ -134,26 +138,30 @@ function makeTranslationAndRotation(object, position, rotation) {
     }
 }
 
-function setLinearVelocity(object, vector) {
-    const rigidBody = object.userData.rigidBody;
+function setLinearVelocity(obj3d, vector) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     rigidBody.setLinearVelocity( new Ammo.btVector3( vector.x, vector.y, vector.z ) ); 
     rigidBody.setAngularVelocity( new Ammo.btVector3( 0,0,0 ) );
 }
 
-function setAngularVelocity(object, vector) {
-    const rigidBody = object.userData.rigidBody;
+function setAngularVelocity(obj3d, vector) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     rigidBody.setLinearVelocity( new Ammo.btVector3( vector.x, vector.y, vector.z ) ); 
     rigidBody.setAngularVelocity( new Ammo.btVector3( vector.x, vector.y, vector.z ) );
 }
 
-function setLinearAndAngularVelocity(object, linear, angular) {
-    const rigidBody = object.userData.rigidBody;
+function setLinearAndAngularVelocity(obj3d, linear, angular) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     rigidBody.setLinearVelocity( new Ammo.btVector3( linear.x, linear.y, linear.z ) ); 
     rigidBody.setAngularVelocity( new Ammo.btVector3( angular.x, angular.y, angular.z ) );
 }
 
-function getOrigin(object, target) {
-    const rigidBody = object.userData.rigidBody;
+function getOrigin(obj3d, target) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     const motionState = rigidBody.getMotionState();
 
     if ( motionState ) {
@@ -165,8 +173,9 @@ function getOrigin(object, target) {
     }
 }
 
-function getRotation(object, target) {
-    const rigidBody = object.userData.rigidBody;
+function getRotation(obj3d, target) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     const motionState = rigidBody.getMotionState();
 
     if ( motionState ) {
@@ -178,8 +187,9 @@ function getRotation(object, target) {
     }
 }
 
-function getOriginAndRotation(object, origin, rotation) {
-    const rigidBody = object.userData.rigidBody;
+function getOriginAndRotation(obj3d, origin, rotation) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
     const motionState = rigidBody.getMotionState();
 
     if ( motionState ) {
