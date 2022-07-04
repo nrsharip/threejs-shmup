@@ -33,6 +33,11 @@ const camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', new Vector3(0, 30,
 const scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
 const orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
 
+// Controls
+const raycaster = new THREE.Raycaster();
+const intersects = [];
+const pointer = new THREE.Vector2();
+
 Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
 
@@ -85,6 +90,16 @@ function render(timeElapsed) {
     requestAnimationFrame( render );
 
     const timeDelta = clock.getDelta();
+
+    // https://threejs.org/docs/#api/en/core/Raycaster
+    intersects.length = 0; // clearing the array
+    raycaster.setFromCamera( pointer, camera );
+	raycaster.intersectObjects( scene.children, false, intersects);
+    for (let intersect of intersects) {
+        // [ { distance, point, face, faceIndex, object }, ... ]
+        let name = intersect.object?.userData?.name;
+        if (name && name == "ground") { console.log(intersect.point); }
+    }
 
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
@@ -150,6 +165,14 @@ function processPause() {
             GAME.state.phase = GAME.PHASES.STARTED;
             break;
     }
+}
+
+// https://threejs.org/docs/#api/en/core/Raycaster
+window.addEventListener( 'pointermove', onPointerMove );
+function onPointerMove( event ) {
+	// calculate pointer position in normalized device coordinates (-1 to +1) for both components
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
 
 // // HELPERS
