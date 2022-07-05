@@ -44,4 +44,11 @@ export const ammo = {
         "ammo_sniper.glb",
         "ammo_uzi.glb",
     ]
-} 
+}
+
+export const sounds = {
+    prefix: "assets/audio/",
+    filenames: [
+        "122103__greatmganga__dshk-01.wav", // https://freesound.org/people/greatmganga/sounds/122103/
+    ]
+}

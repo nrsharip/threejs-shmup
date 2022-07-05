@@ -10,6 +10,7 @@ import * as PHYSICS from './physics.js'
 import * as KEYBOARD from './keyboard.js'
 import * as MENU from './menu.js'
 import * as GLTFS from './gltfs.js'
+import * as SOUNDS from './sounds.js'
 import * as GRAPHICS from './graphics.js'
 import * as PRIMITIVES from './primitives.js'
 import * as UTILS from './utils.js'
@@ -37,15 +38,6 @@ const scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0
 const raycaster = new THREE.Raycaster();
 const intersects = [];
 const pointer = new THREE.Vector2();
-
-// Sounds
-// https://threejs.org/docs/#api/en/audio/Audio
-// create an AudioListener and add it to the camera
-const listener = new THREE.AudioListener();
-camera.add( listener );
-// create a global audio source
-const sounds = []; 
-for (let i = 0; i < 50; sounds.push(new THREE.PositionalAudio( listener )), i++);
 
 Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
@@ -110,17 +102,10 @@ Ammo().then(function ( AmmoLib ) {
         }
     });
 
-    // Loading Sounds
-    // https://threejs.org/docs/#api/en/audio/Audio
-    // load a sound and set it as the Audio object's buffer
-    const audioLoader = new THREE.AudioLoader();
-    // https://freesound.org/people/greatmganga/sounds/122103/
-    audioLoader.load( 'assets/audio/122103__greatmganga__dshk-01.wav', function( buffer ) {
-        for (let sound of sounds) {
-            sound.setBuffer( buffer );
-            sound.setLoop( false );
-            sound.setVolume( 10 );
-        }
+    SOUNDS.queueFileNames([ FILES.sounds ], function(filename, buffer) {
+        GAME.audioBuffers.add(filename, buffer);
+
+        if (filename == "122103__greatmganga__dshk-01.wav") { GAME.audioBuffers.spread(filename, 200); }
     });
 
     requestAnimationFrame( render );
@@ -141,7 +126,7 @@ function render(timeElapsed) {
         if (name && name == "ground") { 
             //console.log(intersect.point); 
         
-            let obj3d = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
+            let obj3d = GAME.instances?.["craft_speederD.glb"]?.inuse?.[0];
             PHYSICS.makeTranslation(obj3d, intersect.point);
         }
     }
@@ -245,7 +230,6 @@ function mouseup(event) {
     }
 }
 
-let soundCount = 0;
 function whilemousedown(event) {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
@@ -255,7 +239,7 @@ function whilemousedown(event) {
                 case 0:
                     let speeder = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
 
-                    sounds[soundCount++ % sounds.length].play();
+                    GAME.sounds.play("122103__greatmganga__dshk-01.wav");
 
                     let obj3d = GAME.instances.acquireInstance("ammo_machinegun.glb");
                     PHYSICS.addRigidBody(obj3d);

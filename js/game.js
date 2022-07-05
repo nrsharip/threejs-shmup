@@ -77,4 +77,33 @@ const models = {
     }
 }
 
-export { PHASES, state, models, instances }
+// https://threejs.org/docs/#api/en/audio/Audio
+// create an AudioListener and add it to the camera
+const audioListener = new THREE.AudioListener();
+
+const sounds = {
+
+    play(filename) {
+        sounds[filename].array[sounds[filename].count++ % sounds[filename].array.length].play()
+    }
+}
+
+const audioBuffers = {
+    add(filename, buffer) {
+        this[filename] = buffer;
+    },
+
+    spread(filename, count) {
+        sounds[filename] = { array: [], count: 0 } ;
+        
+        for (let i = 0; i < count; sounds[filename].array.push(new THREE.PositionalAudio( audioListener )), i++);
+
+        for (let sound of sounds[filename].array) {
+            sound.setBuffer( this[filename] );
+            sound.setLoop( false );
+            sound.setVolume( 5 );
+        }
+    }
+}
+
+export { PHASES, state, models, instances, audioListener, audioBuffers, sounds }
