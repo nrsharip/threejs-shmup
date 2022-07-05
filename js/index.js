@@ -17,6 +17,9 @@ import * as PRIMITIVES from './primitives.js'
 import * as UTILS from './utils.js'
 import WebGLCheck from './lib/WebGL.js';
 
+import * as ammo_machinegun from './objects/ammo_machinegun.js';
+import * as craft_speederD from './objects/craft_speederD.js';
+
 // see https://threejs.org/docs/index.html#manual/en/introduction/WebGL-compatibility-check
 if ( !WebGLCheck.isWebGLAvailable() ) {
     const warning = WebGLCheck.getWebGLErrorMessage();
@@ -49,54 +52,33 @@ Ammo().then(function ( AmmoLib ) {
     let w = 60, h = 0.1, d = 15;
     const ground = PRIMITIVES.makeGround(w, h, d);
     ground["userData"].filename = "ground";
-
     PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
     PHYSICS.addRigidBody(ground);
     scene.add(ground);
 
     // Loading GLTFs
     const gridCell = new Vector2(0, 0);
-    GLTFS.queueFileNames([ FILES.craft, FILES.ammo ], function(filename, gltf) {
-        // console.log(`GLTF ${filename}: `);
-        // console.log(gltf);
-        GAME.models.add(filename, gltf.scene);
+    GLTFS.queueFileNames([ FILES.craft, FILES.ammo ], (function() {
+        let loaded = 0;
+        let total = FILES.craft.filenames.length + FILES.ammo.filenames.length;
+        return function(filename, gltf) {
+            // console.log(`GLTF ${filename}: `);
+            // console.log(gltf);
+            GAME.models.add(filename, gltf.scene);
 
-        if (filename == "craft_speederD.glb") { 
-            GAME.models.createInstances("craft_speederD.glb", 1);
+            // All files loaded?
+            if (++loaded == total) {
+                ammo_machinegun.createInstances(1, 1000);
+                craft_speederD.createInstances(200, 1);
 
-            let obj3d = GAME.instances.acquireInstance(filename);
-            obj3d.position.x = gridCell.x * 3;
-            obj3d.position.y = obj3d.userData.center.y + 0.05 + 0.1;
-            obj3d.position.z = gridCell.y * 3;
-
-            obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
-            obj3d.userData.onCollision = function(other) {
-                // if (other && other.userData) {
-                //     if (other.userData?.name == "ground") {
-                //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
-                //     }
-                // }
-            }
-            PHYSICS.initObject(obj3d, 1000, UTILS.tmpV1, 0.05);
-            PHYSICS.addRigidBody(obj3d);
-            scene.add( obj3d );
-            UTILS.spiralGetNext(gridCell);
-        }
-        if (filename == "ammo_machinegun.glb") { 
-            GAME.models.createInstances("ammo_machinegun.glb", 1000);
-            for (let obj3d of GAME.instances["ammo_machinegun.glb"].available) {
-                obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
-                // obj3d.userData.onCollision = function(other) {
-                //     // if (other && other.userData) {
-                //     //     if (other.userData?.name == "ground") {
-                //     //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
-                //     //     }
-                //     // }
-                // }
-                PHYSICS.initObject(obj3d, 1, UTILS.tmpV1, 0.05);
+                let obj3d = craft_speederD.getInstanceAvailable(0);
+                UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3);
+                obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1);
+    
+                UTILS.spiralGetNext(gridCell);
             }
         }
-    });
+    })());
 
     SOUNDS.queueFileNames([ FILES.sounds ], function(filename, buffer) {
         GAME.audioBuffers.add(filename, buffer);
@@ -116,8 +98,6 @@ function render(timeElapsed) {
         // [ { distance, point, face, faceIndex, object }, ... ]
         let name = intersect.object?.userData?.filename;
         if (name && name == "ground") { 
-            //console.log(intersect.point); 
-        
             let obj3d = GAME.instances?.["craft_speederD.glb"]?.inuse?.[0];
             PHYSICS.makeTranslation(obj3d, intersect.point);
         }
@@ -233,14 +213,8 @@ function whilemousedown(event) {
 
                     GAME.sounds.play("122103__greatmganga__dshk-01.wav");
 
-                    let obj3d = GAME.instances.acquireInstance("ammo_machinegun.glb");
-                    PHYSICS.addRigidBody(obj3d);
-                    PHYSICS.setLinearAndAngularVelocity(obj3d, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
-                    PHYSICS.clearForces(obj3d);
-                    UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - speeder.userData.center.z - 0.1);
-                    PHYSICS.makeTranslationAndRotation(obj3d, UTILS.tmpV1, UTILS.tmpQuat1.identity());
-                    
-                    scene.add( obj3d );
+                    UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - speeder.userData.center.z - 0.1)
+                    let obj3d = ammo_machinegun.addInstanceTo(scene, UTILS.tmpV1);
         
                     PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));                    
                     break;

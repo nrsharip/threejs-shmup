@@ -56,6 +56,9 @@ const instances = {
         this[filename].available.push(instance);
         return instance;
     },
+
+    getAvailable(filename, index) { return this?.[filename]?.available?.[index]; },
+    getInUse(filename, index) { return this?.[filename]?.inuse?.[index]; }
 }
 
 const models = {
