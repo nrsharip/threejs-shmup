@@ -10,8 +10,10 @@ export default class AsbtractGameObjectManager {
     createInstances(mass, count) {
         GAME.models.createInstances(this.glbFilename, count);
         for (let obj3d of GAME.instances[this.glbFilename].available) {
+            obj3d.userData.manager = this;
+
             obj3d.userData.onCollision = this.onCollision.bind(obj3d);
-            obj3d.userData.update = this.update.bind(obj3d);
+            obj3d.userData.onUpdate = this.onUpdate.bind(obj3d);
             obj3d.userData.onKeyboardKeyDown = this.onKeyboardKeyDown.bind(obj3d);
             obj3d.userData.onMouseDown = this.onMouseDown.bind(obj3d);
 
@@ -48,9 +50,11 @@ export default class AsbtractGameObjectManager {
     
     getInstanceInUse(index) { return GAME.instances.getInUse(this.glbFilename, index); }
 
+    update(delta, elapsed) { throw new Error("Abstract Method"); }
+
     onCollision(other) { throw new Error("Abstract Method"); }
 
-    update(delta, elapsed) { throw new Error("Abstract Method"); }
+    onUpdate(delta, elapsed) { throw new Error("Abstract Method"); }
 
     onKeyboardKeyDown(event) { throw new Error("Abstract Method"); }
 

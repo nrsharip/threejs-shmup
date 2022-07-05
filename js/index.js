@@ -18,6 +18,10 @@ import * as UTILS from './utils.js'
 import WebGLCheck from './lib/WebGL.js';
 
 import ammo_machinegun from './objects/ammo_machinegun.js';
+import craft_miner from './objects/craft_miner.js';
+import craft_speederA from './objects/craft_speederA.js';
+import craft_speederB from './objects/craft_speederB.js';
+import craft_speederC from './objects/craft_speederC.js';
 import craft_speederD from './objects/craft_speederD.js';
 
 // see https://threejs.org/docs/index.html#manual/en/introduction/WebGL-compatibility-check
@@ -104,17 +108,24 @@ function loadAssets() {
 
 function loadCompleted() {
     ammo_machinegun.createInstances(1, 1000);
+    craft_miner.createInstances(200, 50);
+    craft_speederA.createInstances(200, 50);
+    craft_speederB.createInstances(200, 50);
+    craft_speederC.createInstances(200, 50);
     craft_speederD.createInstances(200, 1);
 
     const gridCell = new Vector2(0, 0);
-    [ammo_machinegun, craft_speederD].forEach((obj) => {
+    GAME.managers.forEach((obj) => {
         let obj3d = obj.getInstanceAvailable(0);
-        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3);
+        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
         obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
         UTILS.spiralGetNext(gridCell);
     });
 
     GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 200);
+
+    GAME.player["manager"] = craft_speederD;
+    GAME.player["obj3d"] = craft_speederD.getInstanceInUse(0);
 }
 
 function render(timeElapsed) {
@@ -140,10 +151,14 @@ function render(timeElapsed) {
         case GAME.PHASES.GAME_STARTED:
             PHYSICS.update(timeDelta);
 
+            for (let manager of GAME.managers) {
+                manager.update(timeDelta, timeElapsed);
+            }
+
             for (let value of Object.values(GAME.instances)) {
                 if (value.inuse) {
                     for (let obj3d of value.inuse) {
-                        obj3d.userData.update(timeDelta, timeElapsed);
+                        obj3d.userData.onUpdate(timeDelta, timeElapsed);
                     }
                 }
             }

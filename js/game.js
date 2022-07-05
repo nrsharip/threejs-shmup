@@ -120,4 +120,7 @@ const audioBuffers = {
     }
 }
 
-export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds }
+const managers = [];
+const player = {};
+
+export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, player }

@@ -3,6 +3,8 @@ import * as PHYSICS from '../physics.js'
 import * as GAME from '../game.js'
 
 class AmmoMachinegun extends AsbtractGameObjectManager {
+    update(delta, elapsed) {}
+
     onCollision(other) {
         // console.log(other);
         // if (other && other.userData) {
@@ -12,7 +14,7 @@ class AmmoMachinegun extends AsbtractGameObjectManager {
         // }
     }
 
-    update(delta, elapsed) { 
+    onUpdate(delta, elapsed) { 
         if (this.position.z < -80) { 
             PHYSICS.removeRigidBody(this);
             GAME.instances.releaseInstance(this); 
@@ -25,5 +27,7 @@ class AmmoMachinegun extends AsbtractGameObjectManager {
 } 
 
 const ammo_machinegun = new AmmoMachinegun("ammo_machinegun.glb");
+
+GAME.managers.push(ammo_machinegun);
 
 export default ammo_machinegun;
