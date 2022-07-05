@@ -3,8 +3,10 @@ import * as MESH from './mesh.js'
 
 const PHASES = {
     INIT: 1,
-    STARTED: 2,
-    PAUSED: 3,
+    LOAD_STARTED: 2,
+    LOAD_COMPLETED: 3,
+    GAME_STARTED: 4,
+    GAME_PAUSED: 5,
 
     getKey(value) { return Object.keys(this).find(key => this[key] === value) }
 }
@@ -15,13 +17,16 @@ const state = {
     set phase(p) {
         if (Object.values(PHASES).includes(p)) {
             console.log("Game phase: " + PHASES.getKey(p));
-            this._phase = p; 
+            this._phase = p;
+            this?.onPhaseChange?.(p);
         } else {
             throw new Error("Unknown game phase: " + p + ", known: " + Object.values(PHASES));
         }
     },
 
-    get phase() { return this._phase; }
+    get phase() { return this._phase; },
+
+    onPhaseChange: undefined,
 };
 
 const instances = {
@@ -83,9 +88,7 @@ const models = {
 // https://threejs.org/docs/#api/en/audio/Audio
 // create an AudioListener and add it to the camera
 const audioListener = new THREE.AudioListener();
-
 const sounds = {
-
     play(filename) {
         sounds[filename].array[sounds[filename].count++ % sounds[filename].array.length].play()
     }

@@ -27,8 +27,9 @@ if ( !WebGLCheck.isWebGLAvailable() ) {
     throw new Error(warning.textContent);
 }
 
-window.GAME = GAME;
 GAME.state.phase = GAME.PHASES.INIT;
+
+window.GAME = GAME;
 
 const clock = new THREE.Clock();
 
@@ -56,38 +57,65 @@ Ammo().then(function ( AmmoLib ) {
     PHYSICS.addRigidBody(ground);
     scene.add(ground);
 
+    GAME.state.phase = GAME.PHASES.LOAD_STARTED;
+})
+
+GAME.state.onPhaseChange = function(phase) {
+    switch (phase) {
+        case GAME.PHASES.INIT:
+            break;
+        case GAME.PHASES.LOAD_STARTED:
+            loadAssets();
+            requestAnimationFrame( render );
+            break;
+        case GAME.PHASES.LOAD_COMPLETED:
+            loadCompleted();
+            break;
+        case GAME.PHASES.GAME_STARTED:
+            break;
+        case GAME.PHASES.GAME_PAUSED:
+            break;
+    }
+}
+
+function loadAssets() {
+    let processes = 2;
     // Loading GLTFs
-    const gridCell = new Vector2(0, 0);
     GLTFS.queueFileNames([ FILES.craft, FILES.ammo ], (function() {
         let loaded = 0;
         let total = FILES.craft.filenames.length + FILES.ammo.filenames.length;
         return function(filename, gltf) {
-            // console.log(`GLTF ${filename}: `);
-            // console.log(gltf);
             GAME.models.add(filename, gltf.scene);
-
             // All files loaded?
-            if (++loaded == total) {
-                ammo_machinegun.createInstances(1, 1000);
-                craft_speederD.createInstances(200, 1);
-
-                let obj3d = craft_speederD.getInstanceAvailable(0);
-                UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3);
-                obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1);
-    
-                UTILS.spiralGetNext(gridCell);
-            }
+            if (++loaded == total) { if (!--processes) { GAME.state.phase = GAME.PHASES.LOAD_COMPLETED; }; }
         }
     })());
+    // Loading Sounds
+    SOUNDS.queueFileNames([ FILES.sounds ], (function() {
+        let loaded = 0;
+        let total = FILES.sounds.filenames.length;
+        return function(filename, buffer) {
+            GAME.audioBuffers.add(filename, buffer);
+            // All files loaded?
+            if (++loaded == total) { if (!--processes) { GAME.state.phase = GAME.PHASES.LOAD_COMPLETED; }; }
+        }
+    })());
+}
 
-    SOUNDS.queueFileNames([ FILES.sounds ], function(filename, buffer) {
-        GAME.audioBuffers.add(filename, buffer);
+function loadCompleted() {
+    ammo_machinegun.createInstances(1, 1000);
+    craft_speederD.createInstances(200, 1);
 
-        if (filename == "122103__greatmganga__dshk-01.wav") { GAME.audioBuffers.spread(filename, 200); }
+    const gridCell = new Vector2(0, 0);
+    [ammo_machinegun, craft_speederD].forEach((obj) => {
+        let obj3d = obj.getInstanceAvailable(0);
+        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3);
+        obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
+        UTILS.spiralGetNext(gridCell);
     });
 
-    requestAnimationFrame( render );
-})
+    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 200);
+}
 
 function render(timeElapsed) {
     requestAnimationFrame( render );
@@ -109,12 +137,14 @@ function render(timeElapsed) {
 
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
-        case GAME.PHASES.PAUSED:
+        case GAME.PHASES.LOAD_STARTED:
+        case GAME.PHASES.LOAD_COMPLETED:
+        case GAME.PHASES.GAME_PAUSED:
             // for (let gltf of Object.values(GLTFS.loaded)) {
             //     gltf.scene.rotation.y += timeDelta * (Math.PI / 2);
             // }
             break;
-        case GAME.PHASES.STARTED:
+        case GAME.PHASES.GAME_STARTED:
             PHYSICS.update(timeDelta);
 
             // for (let gltf of Object.values(GLTFS.loaded)) {
@@ -146,7 +176,7 @@ function render(timeElapsed) {
 MENU.addEventListener("startButton", "click", function() {
     document.getElementById("mainMenu").style.display = "none";
 
-    GAME.state.phase = GAME.PHASES.STARTED;
+    GAME.state.phase = GAME.PHASES.GAME_STARTED;
 });
 
 MENU.addEventListener("menuMobile", "click", function() {
@@ -166,16 +196,20 @@ function processPause() {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
             break;
-        case GAME.PHASES.STARTED:
+        case GAME.PHASES.LOAD_STARTED:
+            break;
+        case GAME.PHASES.LOAD_COMPLETED:
+            break;
+        case GAME.PHASES.GAME_STARTED:
             MENU.get("startButton").textContent = "Resume";
             document.getElementById("mainMenu").style.display = "block";
 
-            GAME.state.phase = GAME.PHASES.PAUSED;
+            GAME.state.phase = GAME.PHASES.GAME_PAUSED;
             break;
-        case GAME.PHASES.PAUSED:
+        case GAME.PHASES.GAME_PAUSED:
             document.getElementById("mainMenu").style.display = "none";
 
-            GAME.state.phase = GAME.PHASES.STARTED;
+            GAME.state.phase = GAME.PHASES.GAME_STARTED;
             break;
     }
 }
@@ -206,7 +240,11 @@ function whilemousedown(event) {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
             break;
-        case GAME.PHASES.STARTED:
+        case GAME.PHASES.LOAD_STARTED:
+            break;
+        case GAME.PHASES.LOAD_COMPLETED:
+            break;
+        case GAME.PHASES.GAME_STARTED:
             switch(event.button) {
                 case 0:
                     let speeder = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
@@ -226,7 +264,7 @@ function whilemousedown(event) {
                     break;
             }
             break;
-        case GAME.PHASES.PAUSED:
+        case GAME.PHASES.GAME_PAUSED:
 
             break;
     }
