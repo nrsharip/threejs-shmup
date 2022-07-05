@@ -125,8 +125,8 @@ function render(timeElapsed) {
     RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera).forEach((intersect, index, array) => {
         // [ { distance, point, face, faceIndex, object }, ... ]
         let name = intersect.object?.userData?.filename;
-        if (name && name == "ground") { 
-            let obj3d = GAME.instances?.["craft_speederD.glb"]?.inuse?.[0];
+        if (name && name == "ground") {
+            let obj3d = craft_speederD.getInstanceInUse(0);
             PHYSICS.makeTranslation(obj3d, intersect.point);
         }
     });
@@ -247,11 +247,12 @@ function whilemousedown(event) {
         case GAME.PHASES.GAME_STARTED:
             switch(event.button) {
                 case 0:
-                    let speeder = GAME.instances?.["craft_speederD.glb"].inuse?.[0];
+                    let speeder = craft_speederD.getInstanceInUse(0);
 
                     GAME.sounds.play("122103__greatmganga__dshk-01.wav");
 
-                    UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - speeder.userData.center.z - 0.1)
+                    speeder.userData.boundingBox.getSize(UTILS.tmpV1);
+                    UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - UTILS.tmpV1.z/2);
                     let obj3d = ammo_machinegun.addInstanceTo(scene, UTILS.tmpV1);
         
                     PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));                    
