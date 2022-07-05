@@ -29,15 +29,14 @@ if ( !WebGLCheck.isWebGLAvailable() ) {
 
 GAME.state.phase = GAME.PHASES.INIT;
 
-window.GAME = GAME;
-
-const clock = new THREE.Clock();
-
 // GRAPHICS INIT
-const renderer = GRAPHICS.setupRenderer('#mainCanvas');
-const camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', new Vector3(0, 30, 20), new Vector3(0, 0, 0));
-const scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
-//const orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
+const renderer = GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
+const camera = GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
+const scene = GAME.graphics.scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
+const clock = GAME.graphics.clock = new THREE.Clock();
+//const orbitControls = GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
+
+window.GAME = GAME;
 
 Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
@@ -50,11 +49,12 @@ Ammo().then(function ( AmmoLib ) {
     scene.add(dirLight);
     
     // GROUND
-    let w = 60, h = 0.1, d = 15;
+    let w = 100, h = 0.1, d = 30;
     const ground = PRIMITIVES.makeGround(w, h, d);
     ground["userData"].filename = "ground";
-    PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
-    PHYSICS.addRigidBody(ground);
+    ground.position.y -= 0.05;
+    // PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
+    // PHYSICS.addRigidBody(ground);
     scene.add(ground);
 
     GAME.state.phase = GAME.PHASES.LOAD_STARTED;
@@ -122,18 +122,11 @@ function render(timeElapsed) {
 
     const timeDelta = clock.getDelta();
 
-    RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera).forEach((intersect, index, array) => {
-        // [ { distance, point, face, faceIndex, object }, ... ]
-        let name = intersect.object?.userData?.filename;
-        if (name && name == "ground") {
-            let obj3d = craft_speederD.getInstanceInUse(0);
-            PHYSICS.makeTranslation(obj3d, intersect.point);
-        }
-    });
+    RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera);
 
-    let available = GAME.instances["ammo_machinegun.glb"]?.available.length;
-    let inuse = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
-    MENU.get("info").textContent = `inuse: ${inuse} available: ${available}`;
+    // let available = GAME.instances["ammo_machinegun.glb"]?.available.length;
+    // let inuse = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
+    // MENU.get("info").textContent = `inuse: ${inuse} available: ${available}`;
 
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
@@ -147,19 +140,14 @@ function render(timeElapsed) {
         case GAME.PHASES.GAME_STARTED:
             PHYSICS.update(timeDelta);
 
-            // for (let gltf of Object.values(GLTFS.loaded)) {
-            //     if (gltf.scene.position.y < -3) {
-            //         PHYSICS.setLinearAndAngularVelocity(gltf.scene, UTILS.tmpV1.set(0,0,0), UTILS.tmpV2.set(0,0,0));
-            //         PHYSICS.makeTranslationAndRotation(gltf.scene, UTILS.tmpV1.set(0,3,0), UTILS.tmpQuat1.identity());
-            //     }
-            // }
-
-            for (let obj3d of GAME.instances["ammo_machinegun.glb"]?.inuse) {
-                if (obj3d.position.z < -20) { 
-                    PHYSICS.removeRigidBody(obj3d);
-                    GAME.instances.releaseInstance(obj3d); 
+            for (let value of Object.values(GAME.instances)) {
+                if (value.inuse) {
+                    for (let obj3d of value.inuse) {
+                        obj3d.userData.update(timeDelta, timeElapsed);
+                    }
                 }
             }
+
             break;
     }
 
@@ -183,11 +171,31 @@ MENU.addEventListener("menuMobile", "click", function() {
     processPause();
 });
 
-KEYBOARD.addEventListener("keydown", function(e) {
-    //console.log(e);
-    switch (e.code) {
+KEYBOARD.addEventListener("keydown", function(event) {
+    //console.log(event);
+    switch (event.code) {
         case 'Escape':
             processPause();
+            break;
+    }
+
+    switch (GAME.state.phase) {
+        case GAME.PHASES.INIT:
+            break;
+        case GAME.PHASES.LOAD_STARTED:
+            break;
+        case GAME.PHASES.LOAD_COMPLETED:
+            break;
+        case GAME.PHASES.GAME_STARTED:
+            for (let value of Object.values(GAME.instances)) {
+                if (value.inuse) {
+                    for (let obj3d of value.inuse) {
+                        obj3d.userData.onKeyboardKeyDown(event);
+                    }
+                }
+            }
+            break;
+        case GAME.PHASES.GAME_PAUSED:
             break;
     }
 })
@@ -229,20 +237,21 @@ document.addEventListener("mouseup", mouseup);
 // Also clear the interval when user leaves the window with mouse
 document.addEventListener("mouseout", mouseup);
 
-var mousedownID = -1;  //Global ID of mouse down interval
+var mouseDownID = -1;  //Global ID of mouse down interval
 function mousedown(event) {
-    if(mousedownID == -1)  { //Prevent multimple loops!
-        mousedownID = setInterval(whilemousedown, 50 /*execute every 100ms*/, event);
-    }
-}
-function mouseup(event) {
-    if(mousedownID!=-1) {  //Only stop if exists
-        clearInterval(mousedownID);
-        mousedownID=-1;
+    if(mouseDownID == -1)  { //Prevent multimple loops!
+        mouseDownID = setInterval(whileMouseDown, 50 /*execute every 100ms*/, event);
     }
 }
 
-function whilemousedown(event) {
+function mouseup(event) {
+    if(mouseDownID!=-1) {  //Only stop if exists
+        clearInterval(mouseDownID);
+        mouseDownID=-1;
+    }
+}
+
+function whileMouseDown(event) {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
             break;
@@ -251,28 +260,15 @@ function whilemousedown(event) {
         case GAME.PHASES.LOAD_COMPLETED:
             break;
         case GAME.PHASES.GAME_STARTED:
-            switch(event.button) {
-                case 0:
-                    let speeder = craft_speederD.getInstanceInUse(0);
-
-                    GAME.sounds.play("122103__greatmganga__dshk-01.wav");
-
-                    speeder.userData.boundingBox.getSize(UTILS.tmpV1);
-                    UTILS.tmpV1.set(speeder.position.x, speeder.position.y, speeder.position.z - UTILS.tmpV1.z/2);
-                    let obj3d = ammo_machinegun.addInstanceTo(scene, UTILS.tmpV1);
-        
-                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500));                    
-                    break;
-                case 1:
-                    console.log("MIDDLE MOUSE BUTTON");
-                    break;
-                case 2:
-                    console.log("RIGHT MOUSE BUTTON");
-                    break;
+            for (let value of Object.values(GAME.instances)) {
+                if (value.inuse) {
+                    for (let obj3d of value.inuse) {
+                        obj3d.userData.onMouseDown(event);
+                    }
+                }
             }
             break;
         case GAME.PHASES.GAME_PAUSED:
-
             break;
     }
 }

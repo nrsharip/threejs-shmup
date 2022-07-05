@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import * as MESH from './mesh.js'
 
+const graphics = {
+    renderer: {},
+    camera: {},
+    scene: {},
+    clock: {},
+    orbitControls: {},
+}
+
 const PHASES = {
     INIT: 1,
     LOAD_STARTED: 2,
@@ -112,4 +120,4 @@ const audioBuffers = {
     }
 }
 
-export { PHASES, state, models, instances, audioListener, audioBuffers, sounds }
+export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds }

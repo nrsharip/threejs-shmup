@@ -13,4 +13,4 @@ function getIntersects(obj3d, pointer, camera) {
     return intersects;
 }
 
-export { pointer, getIntersects }
+export { pointer, intersects, getIntersects }

@@ -2,7 +2,7 @@ import * as GAME from './game.js'
 import * as PHYSICS from './physics.js'
 import * as UTILS from './utils.js'
 
-export default class AsbtractGameObject {
+export default class AsbtractGameObjectManager {
     constructor(filename) {
         this.glbFilename = filename;
     }
@@ -10,14 +10,12 @@ export default class AsbtractGameObject {
     createInstances(mass, count) {
         GAME.models.createInstances(this.glbFilename, count);
         for (let obj3d of GAME.instances[this.glbFilename].available) {
+            obj3d.userData.onCollision = this.onCollision.bind(obj3d);
+            obj3d.userData.update = this.update.bind(obj3d);
+            obj3d.userData.onKeyboardKeyDown = this.onKeyboardKeyDown.bind(obj3d);
+            obj3d.userData.onMouseDown = this.onMouseDown.bind(obj3d);
+
             obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
-            obj3d.userData.onCollision = function(other) {
-                // if (other && other.userData) {
-                //     if (other.userData?.name == "ground") {
-                //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
-                //     }
-                // }
-            }
             PHYSICS.initObject(obj3d, mass, UTILS.tmpV1, 0.05);
         }
     }
@@ -49,4 +47,12 @@ export default class AsbtractGameObject {
     getInstanceAvailable(index) { return GAME.instances.getAvailable(this.glbFilename, index); }
     
     getInstanceInUse(index) { return GAME.instances.getInUse(this.glbFilename, index); }
+
+    onCollision(other) { throw new Error("Abstract Method"); }
+
+    update(delta, elapsed) { throw new Error("Abstract Method"); }
+
+    onKeyboardKeyDown(event) { throw new Error("Abstract Method"); }
+
+    onMouseDown(event) { throw new Error("Abstract Method"); }
 }
