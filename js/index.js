@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 
-import * as GLBS from './glbs.js';
+import * as FILES from './files.js';
 import * as GAME from './game.js'
 import * as MESH from './mesh.js'
 import * as PHYSICS from './physics.js'
@@ -68,7 +68,7 @@ Ammo().then(function ( AmmoLib ) {
 
     // Loading GLTFs
     const gridCell = new Vector2(0, 0);
-    GLTFS.queueFileNames([ GLBS.craft, GLBS.ammo ], function(filename, gltf) {
+    GLTFS.queueFileNames([ FILES.craft, FILES.ammo ], function(filename, gltf) {
         // console.log(`GLTF ${filename}: `);
         // console.log(gltf);
         GAME.models.add(filename, gltf.scene);
