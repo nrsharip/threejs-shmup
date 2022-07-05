@@ -13,7 +13,7 @@ class CraftSpeederA extends AsbtractGameObjectManager {
     constructor(filename) {
         super(filename);
 
-        this.spawn = { lastTime: 0, deltaMillis: 1000 }
+        this.spawn = { lastTime: 0, deltaMillis: 600 }
     }
 
     update(delta, elapsed) {

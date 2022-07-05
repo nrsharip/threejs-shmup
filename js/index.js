@@ -107,20 +107,25 @@ function loadAssets() {
 }
 
 function loadCompleted() {
-    ammo_machinegun.createInstances(1, 1000);
-    craft_miner.createInstances(200, 50);
-    craft_speederA.createInstances(200, 50);
-    craft_speederB.createInstances(200, 50);
-    craft_speederC.createInstances(200, 50);
-    craft_speederD.createInstances(200, 1);
+    ammo_machinegun.createInstances(0.5, 1000);
+    craft_miner.createInstances(1000, 50);
+    craft_speederA.createInstances(1000, 50);
+    craft_speederB.createInstances(1000, 50);
+    craft_speederC.createInstances(1000, 50);
+    craft_speederD.createInstances(1000, 1);
 
-    const gridCell = new Vector2(0, 0);
-    GAME.managers.forEach((obj) => {
-        let obj3d = obj.getInstanceAvailable(0);
-        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
-        obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
-        UTILS.spiralGetNext(gridCell);
-    });
+    // UNCOMMENT FOR SPIRAL
+    // const gridCell = new Vector2(0, 0);
+    // GAME.managers.forEach((obj) => {
+    //     let obj3d = obj.getInstanceAvailable(0);
+    //     UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
+    //     obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
+    //     UTILS.spiralGetNext(gridCell);
+    // });
+
+    let obj3d = craft_speederD.getInstanceAvailable(0);
+    UTILS.tmpV1.set(0, 0, -10);
+    obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1);
 
     GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 200);
 
@@ -135,9 +140,11 @@ function render(timeElapsed) {
 
     RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera);
 
-    // let available = GAME.instances["ammo_machinegun.glb"]?.available.length;
-    // let inuse = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
-    // MENU.get("info").textContent = `inuse: ${inuse} available: ${available}`;
+    // let available1 = GAME.instances["ammo_machinegun.glb"]?.available.length;
+    // let inuse1 = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
+    // let available2 = GAME.instances["craft_speederA.glb"]?.available.length;
+    // let inuse2 = GAME.instances["craft_speederA.glb"]?.inuse.length;
+    // MENU.get("info").textContent = `inuse: ${inuse1} available: ${available1} \n inuse: ${inuse2} available: ${available2}`;
 
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:

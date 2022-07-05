@@ -5,9 +5,13 @@ import * as UTILS from './utils.js'
 export default class AsbtractGameObjectManager {
     constructor(filename) {
         this.glbFilename = filename;
+        this.mass = 1;
+        this.bufferSize = 10;
     }
     
     createInstances(mass, count) {
+        this.mass = mass;
+        this.bufferSize = count;
         GAME.models.createInstances(this.glbFilename, count);
         for (let obj3d of GAME.instances[this.glbFilename].available) {
             obj3d.userData.manager = this;
@@ -21,10 +25,20 @@ export default class AsbtractGameObjectManager {
             PHYSICS.initObject(obj3d, mass, UTILS.tmpV1, 0.05);
         }
     }
+
+    acquireInstance() {
+        let obj3d = GAME.instances.acquireInstance(this.glbFilename);
+        if (!obj3d) {
+            // no more objects in the pool, allocating new bulk of objects
+            this.createInstances(this.mass, this.bufferSize); 
+            obj3d = GAME.instances.acquireInstance(this.glbFilename);
+        }
+        return obj3d;
+    }
     
     addInstanceTo(to, position, rotation, linVelocity, angVelocity) {
-        let obj3d = GAME.instances.acquireInstance(this.glbFilename);
-        
+        let obj3d = this.acquireInstance();
+
         PHYSICS.clearForces(obj3d);
         PHYSICS.addRigidBody(obj3d);
         

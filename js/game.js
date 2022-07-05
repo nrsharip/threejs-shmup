@@ -46,10 +46,12 @@ const instances = {
             let obj3d = this[filename].available.pop();
             this[filename].inuse.push(obj3d);
             return obj3d;
-        } else {
-            models.createInstance(filename);
-            return this.acquireInstance(filename);
-        }
+        } 
+        // else {
+        //     models.createInstance(filename);
+        //     return this.acquireInstance(filename);
+        // }
+        return undefined;
     },
 
     releaseInstance(instance) {
@@ -115,7 +117,7 @@ const audioBuffers = {
         for (let sound of sounds[filename].array) {
             sound.setBuffer( this[filename] );
             sound.setLoop( false );
-            sound.setVolume( 5 );
+            sound.setVolume( 0.05 );
         }
     }
 }
