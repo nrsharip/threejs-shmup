@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { Vector2, Vector3 } from 'three';
 
+import * as RAYCASTER from './raycaster.js';
 import * as FILES from './files.js';
 import * as GAME from './game.js'
 import * as MESH from './mesh.js'
@@ -33,11 +34,6 @@ const renderer = GRAPHICS.setupRenderer('#mainCanvas');
 const camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', new Vector3(0, 30, 20), new Vector3(0, 0, 0));
 const scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
 //const orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
-
-// Controls
-const raycaster = new THREE.Raycaster();
-const intersects = [];
-const pointer = new THREE.Vector2();
 
 Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
@@ -116,11 +112,7 @@ function render(timeElapsed) {
 
     const timeDelta = clock.getDelta();
 
-    // https://threejs.org/docs/#api/en/core/Raycaster
-    intersects.length = 0; // clearing the array
-    raycaster.setFromCamera( pointer, camera );
-    raycaster.intersectObjects( scene.children, false, intersects);
-    for (let intersect of intersects) {
+    RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera).forEach((intersect, index, array) => {
         // [ { distance, point, face, faceIndex, object }, ... ]
         let name = intersect.object?.userData?.filename;
         if (name && name == "ground") { 
@@ -129,7 +121,7 @@ function render(timeElapsed) {
             let obj3d = GAME.instances?.["craft_speederD.glb"]?.inuse?.[0];
             PHYSICS.makeTranslation(obj3d, intersect.point);
         }
-    }
+    });
 
     let available = GAME.instances["ammo_machinegun.glb"]?.available.length;
     let inuse = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
@@ -212,8 +204,8 @@ function processPause() {
 window.addEventListener( 'pointermove', onPointerMove );
 function onPointerMove( event ) {
     // calculate pointer position in normalized device coordinates (-1 to +1) for both components
-    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    RAYCASTER.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    RAYCASTER.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
 
 // https://stackoverflow.com/questions/15505272/javascript-while-mousedown
