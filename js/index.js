@@ -17,8 +17,8 @@ import * as PRIMITIVES from './primitives.js'
 import * as UTILS from './utils.js'
 import WebGLCheck from './lib/WebGL.js';
 
-import * as ammo_machinegun from './objects/ammo_machinegun.js';
-import * as craft_speederD from './objects/craft_speederD.js';
+import ammo_machinegun from './objects/ammo_machinegun.js';
+import craft_speederD from './objects/craft_speederD.js';
 
 // see https://threejs.org/docs/index.html#manual/en/introduction/WebGL-compatibility-check
 if ( !WebGLCheck.isWebGLAvailable() ) {
@@ -223,6 +223,12 @@ function onPointerMove( event ) {
 }
 
 // https://stackoverflow.com/questions/15505272/javascript-while-mousedown
+// Assign events
+document.addEventListener("mousedown", mousedown);
+document.addEventListener("mouseup", mouseup);
+// Also clear the interval when user leaves the window with mouse
+document.addEventListener("mouseout", mouseup);
+
 var mousedownID = -1;  //Global ID of mouse down interval
 function mousedown(event) {
     if(mousedownID == -1)  { //Prevent multimple loops!
@@ -270,11 +276,6 @@ function whilemousedown(event) {
             break;
     }
 }
-//Assign events
-document.addEventListener("mousedown", mousedown);
-document.addEventListener("mouseup", mouseup);
-//Also clear the interval when user leaves the window with mouse
-document.addEventListener("mouseout", mouseup);
 
 // // HELPERS
 // // see https://threejs.org/manual/#en/lights
