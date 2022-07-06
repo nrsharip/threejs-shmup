@@ -30,7 +30,12 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
                 GAME.sounds.play(impacts[Math.floor(Math.random() * impacts.length)]);
 
-                this.userData.gameplay.health -= other.userData.gameplay.damage;
+                let damage = other.userData.gameplay.damage;
+
+                this.userData.gameplay.health -= damage;
+
+                other.userData.gameplay.releasedBy.userData.gameplay.score += damage;
+
                 if (this.userData.gameplay.health <= 0) {
                     this.userData.gameplay.destroyed = true;
                     this.userData.releaseInstance();

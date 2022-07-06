@@ -254,7 +254,11 @@ function processPause() {
         case GAME.PHASES.GAME_RESUMED:
             MENU.get("startButton").textContent = "Resume";
             document.getElementById("mainMenu").style.display = "block";
-
+            
+            MENU.get("sc").textContent = ``;
+            MENU.get("hp").textContent = ``;
+            MENU.get("xp").textContent = ``;
+            
             GAME.state.phase = GAME.PHASES.GAME_PAUSED;
             break;
         case GAME.PHASES.GAME_PAUSED:

@@ -36,6 +36,9 @@ class CraftSpeederD extends AbstractCraft {
         })
 
         //MENU.get("info").textContent = `x: ${this.position.x} y: ${this.position.y} z:${this.position.z}`;
+        MENU.get("sc").textContent = `SCORE: ${this.userData.gameplay.score}`;
+        MENU.get("hp").textContent = `HEALTH: ${this.userData.gameplay.health}`;
+        MENU.get("xp").textContent = `EXPERIENCE: ${this.userData.gameplay.experience}`;
     }
 
     onKeyboardKeyDown(event) {  }
@@ -48,6 +51,7 @@ class CraftSpeederD extends AbstractCraft {
                 this.userData.boundingBox.getSize(UTILS.tmpV1);
                 UTILS.tmpV2.set(this.position.x, this.position.y, this.position.z - UTILS.tmpV1.z/2 - 1);
                 let obj3d = ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
+                obj3d.userData.gameplay.releasedBy = this;
 
                 PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500)); 
                 break;

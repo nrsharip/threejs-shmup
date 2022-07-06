@@ -67,6 +67,30 @@
 				text-align: center;
 			}
 
+			/* UI RELATED */
+			.gameui {
+				width: 100%;
+				/* https://stackoverflow.com/questions/47344626/put-a-table-in-a-canvas-in-html */
+				position: absolute;
+				z-index: 2;
+			}
+			/* https://stackoverflow.com/questions/558721/css-classes-subclasses */
+			.gameui .column1 { width: 30%; }
+			.gameui .column2 { width: 30%; }
+			.gameui .column3 { width: 30%; }
+
+			.gameui div {
+				padding: 10px;
+				padding-left: 0;
+				padding-right: 0;
+
+				color: white;
+				font-family: Courier;
+				font-size: 12pt;
+				font-weight: bold;
+				text-align: center;
+			}
+
 			/* https://www.w3schools.com/howto/howto_css_three_columns.asp */
 			/* Responsive layout - when the screen is less than 600px wide, 
 			 * make the three columns stack on top of each other instead of next to each other 
@@ -112,6 +136,14 @@
 					<button class="menuButton" disabled>Quit</button>
 				</td>
 				<td class="columnSide"></td>
+			</tr>
+		</table>
+
+		<table id="mainGUI" class="gameui">
+			<tr>
+				<td class="column1"><div id="sc"></div></td>
+				<td class="column2"><div id="hp"></div></td>
+				<td class="column3"><div id="xp"></div></td>
 			</tr>
 		</table>
 
