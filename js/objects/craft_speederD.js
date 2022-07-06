@@ -20,6 +20,7 @@ class CraftSpeederD extends AsbtractGameObjectManager {
     }
 
     onUpdate(delta, elapsed) { 
+        super.onUpdate(delta, elapsed);
         RAYCASTER.intersects?.forEach((intersect, index, array) => {
             // [ { distance, point, face, faceIndex, object }, ... ]
             let name = intersect.object?.userData?.filename;
@@ -41,7 +42,7 @@ class CraftSpeederD extends AsbtractGameObjectManager {
                 this.userData.boundingBox.getSize(UTILS.tmpV1);
                 UTILS.tmpV2.set(this.position.x, this.position.y, this.position.z - UTILS.tmpV1.z/2);
                 let obj3d = ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
-        
+
                 PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500)); 
                 break;
             case 1:

@@ -124,5 +124,6 @@ const audioBuffers = {
 
 const managers = [];
 const player = {};
+const time = { delta: 0, elapsed: 0 };
 
-export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, player }
+export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, player, time }

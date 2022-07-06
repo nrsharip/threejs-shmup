@@ -41,7 +41,7 @@ class CraftSpeederA extends AsbtractGameObjectManager {
     }
 
     onUpdate(delta, elapsed) {
-
+        super.onUpdate(delta, elapsed);
     }
 
     onKeyboardKeyDown(event) {

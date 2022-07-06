@@ -13,7 +13,8 @@ class CraftMiner extends AsbtractGameObjectManager {
     onCollision(other) {
     }
 
-    onUpdate(delta, elapsed) { 
+    onUpdate(delta, elapsed) {
+        super.onUpdate(delta, elapsed);
     }
 
     onKeyboardKeyDown(event) {

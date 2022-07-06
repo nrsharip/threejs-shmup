@@ -33,6 +33,8 @@ export default class AsbtractGameObjectManager {
             this.createInstances(this.mass, this.bufferSize); 
             obj3d = GAME.instances.acquireInstance(this.glbFilename);
         }
+        obj3d.userData.timeCreated = GAME.time.elapsed;
+        obj3d.userData.timeElapsed = 0;
         return obj3d;
     }
     
@@ -68,7 +70,9 @@ export default class AsbtractGameObjectManager {
 
     onCollision(other) { throw new Error("Abstract Method"); }
 
-    onUpdate(delta, elapsed) { throw new Error("Abstract Method"); }
+    onUpdate(delta, elapsed) { 
+        this.userData.timeElapsed = elapsed - this.userData.timeCreated;
+    }
 
     onKeyboardKeyDown(event) { throw new Error("Abstract Method"); }
 

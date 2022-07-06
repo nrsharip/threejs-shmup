@@ -136,15 +136,18 @@ function loadCompleted() {
 function render(timeElapsed) {
     requestAnimationFrame( render );
 
-    const timeDelta = clock.getDelta();
+    const timeDelta = GAME.time.delta = clock.getDelta();
+    GAME.time.elapsed = timeElapsed;
 
     RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera);
 
+    // MENU.get("info").style.display = "block";
     // let available1 = GAME.instances["ammo_machinegun.glb"]?.available.length;
     // let inuse1 = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
+    // MENU.get("info").textContent = `inuse: ${inuse1} available: ${available1};`
     // let available2 = GAME.instances["craft_speederA.glb"]?.available.length;
     // let inuse2 = GAME.instances["craft_speederA.glb"]?.inuse.length;
-    // MENU.get("info").textContent = `inuse: ${inuse1} available: ${available1} \n inuse: ${inuse2} available: ${available2}`;
+    // MENU.get("info").textContent = `inuse: ${inuse2} available: ${available2}`;
 
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
