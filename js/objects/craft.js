@@ -20,8 +20,24 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
     }
     
     onCollision(other) {
-        console.log(other);
-        if (other && other.userData) {  }
+        super.onCollision(other);
+        
+        if (!other || !other.userData) { console.log("ERROR: the object is unrecognizable: " + other); return; }
+
+        if (other.userData.filename.startsWith("ammo_")) {
+            if (!other.userData.gameplay.targetsHit.includes(this)) {
+                other.userData.gameplay.targetsHit.push(this);
+
+                //console.log(other);
+                //GAME.sounds.play(impacts[Math.floor(Math.random() * impacts.length)]);
+
+                this.userData.gameplay.health -= other.userData.gameplay.damage;
+                if (this.userData.gameplay.health <= 0) {
+                    this.userData.gameplay.destroyed = true;
+                    this.userData.releaseInstance();
+                }
+            }
+        }
     }
 
     onUpdate(delta, elapsed) {

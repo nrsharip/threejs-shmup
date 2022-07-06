@@ -20,6 +20,7 @@ export default class AsbtractGameObjectManager {
             obj3d.userData.onUpdate = this.onUpdate.bind(obj3d);
             obj3d.userData.onKeyboardKeyDown = this.onKeyboardKeyDown.bind(obj3d);
             obj3d.userData.onMouseDown = this.onMouseDown.bind(obj3d);
+            obj3d.userData.releaseInstance = this.releaseInstance.bind(obj3d);
             obj3d.userData.gameplay = {};
             this.resetGamePlayParams(obj3d.userData.gameplay);
 
@@ -69,6 +70,12 @@ export default class AsbtractGameObjectManager {
     
     getInstanceInUse(index) { return GAME.instances.getInUse(this.glbFilename, index); }
 
+    releaseInstance() {
+        PHYSICS.makeTranslation(this, UTILS.tmpV3.set(0,0,100));
+        PHYSICS.removeRigidBody(this);
+        GAME.instances.releaseInstance(this); 
+    }
+    
     resetGamePlayParams() { throw new Error("Abstract Method"); }
 
     update(delta, elapsed) { throw new Error("Abstract Method"); }

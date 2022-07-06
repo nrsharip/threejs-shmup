@@ -23,9 +23,7 @@ class AmmoMachinegun extends AbstractAmmo {
         super.onUpdate(delta, elapsed);
         // if bullet exists more than 5 sec - remove it
         if (this.userData.timeElapsed > 5000) {
-            PHYSICS.makeTranslation(this, UTILS.tmpV3.set(0,0,100));
-            PHYSICS.removeRigidBody(this);
-            GAME.instances.releaseInstance(this); 
+            this.userData.releaseInstance();
         }
     }
 
