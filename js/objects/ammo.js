@@ -25,7 +25,9 @@ export default class AbstractAmmo extends AsbtractGameObjectManager {
 
     getGamePlayParams() {
         return Object.create({
-            damage: 20
+            damage: 20,
+            releasedBy: undefined,
+            targetsHit: []
         });
     }
 }

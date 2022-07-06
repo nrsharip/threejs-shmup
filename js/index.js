@@ -93,7 +93,7 @@ function loadAssets() {
         }
     })());
     // Loading Sounds
-    SOUNDS.queueFileNames([ FILES.sounds ], (function() {
+    SOUNDS.queueFileNames([ FILES.sounds, FILES.impact ], (function() { 
         let loaded = 0;
         let total = FILES.sounds.filenames.length;
         return function(filename, buffer) {
@@ -112,7 +112,12 @@ function loadCompleted() {
     craft_speederC.createInstances(1000, 50);
     craft_speederD.createInstances(1000, 1);
 
-    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 200);
+    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 100);
+    GAME.audioBuffers.spread("impactTin_medium_000.ogg", 20);
+    GAME.audioBuffers.spread("impactTin_medium_001.ogg", 20);
+    GAME.audioBuffers.spread("impactTin_medium_002.ogg", 20);
+    GAME.audioBuffers.spread("impactTin_medium_003.ogg", 20);
+    GAME.audioBuffers.spread("impactTin_medium_004.ogg", 20);
 
     // UNCOMMENT FOR SPIRAL
     // const gridCell = new Vector2(0, 0);

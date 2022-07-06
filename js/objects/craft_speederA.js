@@ -12,6 +12,7 @@ class CraftSpeederA extends AbstractCraft {
     }
 
     onCollision(other) {
+        super.onCollision(other);
     }
 
     onUpdate(delta, elapsed) {

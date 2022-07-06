@@ -16,6 +16,7 @@ class CraftSpeederD extends AbstractCraft {
     }
     
     onCollision(other) {
+        super.onCollision(other);
         // console.log(other);
         // if (other && other.userData) {
         //     if (other.userData?.name == "ground") {
@@ -45,7 +46,7 @@ class CraftSpeederD extends AbstractCraft {
                 GAME.sounds.play("122103__greatmganga__dshk-01.wav");
 
                 this.userData.boundingBox.getSize(UTILS.tmpV1);
-                UTILS.tmpV2.set(this.position.x, this.position.y, this.position.z - UTILS.tmpV1.z/2);
+                UTILS.tmpV2.set(this.position.x, this.position.y, this.position.z - UTILS.tmpV1.z/2 - 1);
                 let obj3d = ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
 
                 PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 0, -1500)); 

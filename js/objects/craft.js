@@ -4,6 +4,14 @@ import * as THREE from 'three';
 import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
+const impacts = [
+    "impactTin_medium_000.ogg",
+    "impactTin_medium_001.ogg",
+    "impactTin_medium_002.ogg",
+    "impactTin_medium_003.ogg",
+    "impactTin_medium_004.ogg",
+]
+
 export default class AbstractCraft extends AsbtractSpawningObjectManager {
     constructor(filename) { super(filename); }
 
@@ -12,6 +20,8 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
     }
     
     onCollision(other) {
+        console.log(other);
+        if (other && other.userData) {  }
     }
 
     onUpdate(delta, elapsed) {

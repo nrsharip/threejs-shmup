@@ -52,3 +52,14 @@ export const sounds = {
         "122103__greatmganga__dshk-01.wav", // https://freesound.org/people/greatmganga/sounds/122103/
     ]
 }
+
+export const impact = {
+    prefix: "assets/audio/kenney_impactsounds/Audio/",
+    filenames: [
+        "impactTin_medium_000.ogg", // https://kenney.nl/assets/impact-sounds
+        "impactTin_medium_001.ogg",
+        "impactTin_medium_002.ogg",
+        "impactTin_medium_003.ogg",
+        "impactTin_medium_004.ogg",
+    ]
+}
