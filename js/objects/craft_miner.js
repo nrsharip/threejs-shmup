@@ -1,10 +1,10 @@
-import AsbtractSpawningObjectManager from '../spawning.js'
+import Craft from './craft.js'
 
 import * as THREE from 'three';
 import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
-class CraftMiner extends AsbtractSpawningObjectManager {
+class CraftMiner extends Craft {
     constructor(filename) { super(filename); }
 
     update(delta, elapsed) {
@@ -22,17 +22,6 @@ class CraftMiner extends AsbtractSpawningObjectManager {
     }
 
     onMouseDown(event) {
-    }
-
-    spawnParameters() {
-        let tmp1 = new THREE.Object3D();
-        tmp1.position.set(90 * Math.random() - 45, 0, -80);         // position
-        tmp1.lookAt(GAME.player.obj3d.position);                    // rotation
-        UTILS.tmpV1.set(0, 0, 10).applyQuaternion(tmp1.quaternion); // linear velocity
-        UTILS.tmpV2.set(0, 0, 0);                                   // angular velocity
-
-        tmp1.quaternion.multiply(UTILS.quatDegrees180); // turning 180 degrees so the models face towards the player
-        return [tmp1.position, tmp1.quaternion, UTILS.tmpV1.clone(), UTILS.tmpV2.clone()];
     }
 }
 

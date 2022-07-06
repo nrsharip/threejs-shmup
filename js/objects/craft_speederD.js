@@ -1,4 +1,5 @@
-import AsbtractGameObjectManager from '../object.js'
+import Craft from './craft.js'
+
 import * as PHYSICS from '../physics.js'
 import * as RAYCASTER from '../raycaster.js';
 import * as GAME from '../game.js'
@@ -7,8 +8,12 @@ import * as MENU from '../menu.js'
 
 import ammo_machinegun from './ammo_machinegun.js';
 
-class CraftSpeederD extends AsbtractGameObjectManager {
-    update(delta, elapsed) {}
+class CraftSpeederD extends Craft {
+    constructor(filename) { super(filename); }
+
+    update(delta, elapsed) {
+        super.update(delta, elapsed);
+    }
     
     onCollision(other) {
         // console.log(other);
@@ -52,7 +57,6 @@ class CraftSpeederD extends AsbtractGameObjectManager {
                 console.log("RIGHT MOUSE BUTTON");
                 break;
         }
-
     }
 }
 

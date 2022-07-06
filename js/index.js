@@ -1,12 +1,10 @@
 "use strict"
 
 import * as THREE from 'three';
-import { Vector2, Vector3 } from 'three';
 
 import * as RAYCASTER from './raycaster.js';
 import * as FILES from './files.js';
 import * as GAME from './game.js'
-import * as MESH from './mesh.js'
 import * as PHYSICS from './physics.js'
 import * as KEYBOARD from './keyboard.js'
 import * as MENU from './menu.js'
@@ -125,11 +123,7 @@ function loadCompleted() {
     //     UTILS.spiralGetNext(gridCell);
     // });
 
-    let obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1.set(0, 0, -10));
-
-    GAME.player["manager"] = craft_speederD;
-    GAME.player["obj3d"] = craft_speederD.getInstanceInUse(0);
-
+    // Non-player characters
     craft_miner.setSpawnDelta(1000);
     craft_miner.setSpawnEnabled(true);
     craft_speederA.setSpawnDelta(800);
@@ -138,6 +132,13 @@ function loadCompleted() {
     craft_speederB.setSpawnEnabled(true);
     craft_speederC.setSpawnDelta(400);
     craft_speederC.setSpawnEnabled(true);
+
+    // Player
+    craft_speederD.setSpawnEnabled(false);
+    
+    let obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1.set(0, 0, -10));
+    GAME.player["manager"] = craft_speederD;
+    GAME.player["obj3d"] = craft_speederD.getInstanceInUse(0);
 }
 
 function render(timeElapsed) {
