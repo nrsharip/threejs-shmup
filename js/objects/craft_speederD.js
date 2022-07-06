@@ -60,8 +60,8 @@ class CraftSpeederD extends AbstractCraft {
         }
     }
 
-    getGamePlayParams() {
-        let params = super.getGamePlayParams();
+    resetGamePlayParams(params) {
+        super.resetGamePlayParams(params);
 
         params.health = 500;
         params.score = 0;

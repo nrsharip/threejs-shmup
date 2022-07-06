@@ -20,6 +20,8 @@ export default class AsbtractGameObjectManager {
             obj3d.userData.onUpdate = this.onUpdate.bind(obj3d);
             obj3d.userData.onKeyboardKeyDown = this.onKeyboardKeyDown.bind(obj3d);
             obj3d.userData.onMouseDown = this.onMouseDown.bind(obj3d);
+            obj3d.userData.gameplay = {};
+            this.resetGamePlayParams(obj3d.userData.gameplay);
 
             obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
             PHYSICS.initObject(obj3d, mass, UTILS.tmpV1, 0.05);
@@ -33,9 +35,9 @@ export default class AsbtractGameObjectManager {
             this.createInstances(this.mass, this.bufferSize); 
             obj3d = GAME.instances.acquireInstance(this.glbFilename);
         }
-        obj3d.userData.timeCreated = GAME.time.elapsed;
+        obj3d.userData.timeAcquired = GAME.time.elapsed;
         obj3d.userData.timeElapsed = 0;
-        obj3d.userData.gameplay = this.getGamePlayParams();
+        this.resetGamePlayParams(obj3d.userData.gameplay);
         return obj3d;
     }
     
@@ -67,14 +69,14 @@ export default class AsbtractGameObjectManager {
     
     getInstanceInUse(index) { return GAME.instances.getInUse(this.glbFilename, index); }
 
-    getGamePlayParams() { throw new Error("Abstract Method"); }
+    resetGamePlayParams() { throw new Error("Abstract Method"); }
 
     update(delta, elapsed) { throw new Error("Abstract Method"); }
 
     onCollision(other) { throw new Error("Abstract Method"); }
 
     onUpdate(delta, elapsed) { 
-        this.userData.timeElapsed = elapsed - this.userData.timeCreated;
+        this.userData.timeElapsed = elapsed - this.userData.timeAcquired;
     }
 
     onKeyboardKeyDown(event) { throw new Error("Abstract Method"); }

@@ -33,8 +33,8 @@ class AmmoMachinegun extends AbstractAmmo {
 
     onMouseDown(event) {  }
 
-    getGamePlayParams() {
-        let params = super.getGamePlayParams();
+    resetGamePlayParams(params) {
+        super.resetGamePlayParams(params);
 
         params.damage = 10;
 

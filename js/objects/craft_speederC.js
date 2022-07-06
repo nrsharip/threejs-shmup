@@ -25,8 +25,8 @@ class CraftSpeederC extends AbstractCraft {
     onMouseDown(event) {
     }
 
-    getGamePlayParams() {
-        let params = super.getGamePlayParams();
+    resetGamePlayParams(params) {
+        super.resetGamePlayParams(params);
 
         params.health = 40;
 

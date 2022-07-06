@@ -23,11 +23,18 @@ export default class AbstractAmmo extends AsbtractGameObjectManager {
     onMouseDown(event) {
     }
 
-    getGamePlayParams() {
-        return Object.create({
-            damage: 20,
-            releasedBy: undefined,
-            targetsHit: []
-        });
+    resetGamePlayParams(params) {
+        if (!params) { throw new Error("params must be an object") }
+
+        params.damage = 20;
+        params.releasedBy = undefined;
+
+        if (params.targetsHit && params.targetsHit instanceof Array) {
+            params.targetsHit.length = 0;
+        } else {
+            params.targetsHit = [];
+        }
+
+        return params;
     }
 }

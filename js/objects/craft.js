@@ -45,10 +45,12 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         return [tmp1.position, tmp1.quaternion, UTILS.tmpV1.clone(), UTILS.tmpV2.clone()];
     }
 
-    getGamePlayParams() {
-        return Object.create({
-            health: 100,
-            destroyed: false
-        });
+    resetGamePlayParams(params) {
+        if (!params) { throw new Error("params must be an object") }
+        
+        params.health = 100;
+        params.destroyed = false;
+
+        return params;
     }
 }
