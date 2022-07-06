@@ -114,6 +114,8 @@ function loadCompleted() {
     craft_speederC.createInstances(1000, 50);
     craft_speederD.createInstances(1000, 1);
 
+    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 200);
+
     // UNCOMMENT FOR SPIRAL
     // const gridCell = new Vector2(0, 0);
     // GAME.managers.forEach((obj) => {
@@ -123,14 +125,19 @@ function loadCompleted() {
     //     UTILS.spiralGetNext(gridCell);
     // });
 
-    let obj3d = craft_speederD.getInstanceAvailable(0);
-    UTILS.tmpV1.set(0, 0, -10);
-    obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1);
-
-    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 200);
+    let obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1.set(0, 0, -10));
 
     GAME.player["manager"] = craft_speederD;
     GAME.player["obj3d"] = craft_speederD.getInstanceInUse(0);
+
+    craft_miner.setSpawnDelta(1000);
+    craft_miner.setSpawnEnabled(true);
+    craft_speederA.setSpawnDelta(800);
+    craft_speederA.setSpawnEnabled(true);
+    craft_speederB.setSpawnDelta(600);
+    craft_speederB.setSpawnEnabled(true);
+    craft_speederC.setSpawnDelta(400);
+    craft_speederC.setSpawnEnabled(true);
 }
 
 function render(timeElapsed) {

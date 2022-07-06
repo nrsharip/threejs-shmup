@@ -46,11 +46,20 @@ function spiralGetNext(inOut) {
     }
 }
 
+// tmp2.quaternion rotates by 180 degrees
+let tmp2 = new THREE.Object3D();
+tmp2.position.set(0,0,0);
+tmp2.lookAt(0,0,-10); 
+
+const quatDegrees180 = tmp2.quaternion;
+
 export { 
     resizeRendererToDisplaySize, 
     spiralGetNext, 
     tmpM1, tmpM2, tmpM3,
     tmpEuler1, tmpEuler2, tmpEuler3,
     tmpQuat1, tmpQuat2, tmpQuat3,
-    tmpV1, tmpV2, tmpV3
+    tmpV1, tmpV2, tmpV3,
+
+    quatDegrees180
 }

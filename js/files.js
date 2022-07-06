@@ -22,11 +22,11 @@ export const craft = {
     onFileload(filename, gltf) {
         // https://threejs.org/docs/#api/en/math/Color.setRGB
         if (filename == "craft_miner.glb") { gltf.scene.children[0].children[3].material.color.setRGB(1, 0, 0); }
-        if (filename == "craft_speederA.glb") { gltf.scene.children[0].children[1].material.color.setRGB(1, 0, 0); }
-        if (filename == "craft_speederB.glb") { gltf.scene.children[0].children[1].material.color.setRGB(1, 0, 0); }
+        if (filename == "craft_speederA.glb") { gltf.scene.children[0].children[1].material.color.setRGB(0, 1, 0); }
+        if (filename == "craft_speederB.glb") { gltf.scene.children[0].children[1].material.color.setRGB(0, 0, 1); }
         if (filename == "craft_speederC.glb") { 
-            gltf.scene.children[0].children[0].material.color.setRGB(1, 0, 0); 
-            gltf.scene.children[0].children[1].material.color.setRGB(1, 0, 0); 
+            gltf.scene.children[0].children[0].material.color.setRGB(1, 1, 0); 
+            gltf.scene.children[0].children[1].material.color.setRGB(1, 1, 0); 
         }
         if (filename == "craft_speederD.glb") { gltf.scene.children[0].children[3].material.color.setRGB(1, 1, 1); }
     }
