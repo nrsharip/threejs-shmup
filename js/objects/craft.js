@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
-export default class Craft extends AsbtractSpawningObjectManager {
+export default class AbstractCraft extends AsbtractSpawningObjectManager {
     constructor(filename) { super(filename); }
 
     update(delta, elapsed) {
@@ -33,5 +33,12 @@ export default class Craft extends AsbtractSpawningObjectManager {
 
         tmp1.quaternion.multiply(UTILS.quatDegrees180); // turning 180 degrees so the models face towards the player
         return [tmp1.position, tmp1.quaternion, UTILS.tmpV1.clone(), UTILS.tmpV2.clone()];
+    }
+
+    getGamePlayParams() {
+        return Object.create({
+            health: 100,
+            destroyed: false
+        });
     }
 }

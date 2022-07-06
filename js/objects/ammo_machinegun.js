@@ -1,10 +1,14 @@
-import AsbtractGameObjectManager from '../object.js'
+import AbstractAmmo from './ammo.js'
 import * as PHYSICS from '../physics.js'
 import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
-class AmmoMachinegun extends AsbtractGameObjectManager {
-    update(delta, elapsed) {}
+class AmmoMachinegun extends AbstractAmmo {
+    constructor(filename) { super(filename); }
+
+    update(delta, elapsed) { 
+        super.update(delta, elapsed);
+    }
 
     onCollision(other) {
         // console.log(other);
@@ -28,6 +32,14 @@ class AmmoMachinegun extends AsbtractGameObjectManager {
     onKeyboardKeyDown(event) {  }
 
     onMouseDown(event) {  }
+
+    getGamePlayParams() {
+        let params = super.getGamePlayParams();
+
+        params.damage = 10;
+
+        return params;
+    }
 } 
 
 const ammo_machinegun = new AmmoMachinegun("ammo_machinegun.glb");

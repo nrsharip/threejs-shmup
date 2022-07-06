@@ -1,4 +1,4 @@
-import Craft from './craft.js'
+import AbstractCraft from './craft.js'
 
 import * as PHYSICS from '../physics.js'
 import * as RAYCASTER from '../raycaster.js';
@@ -8,7 +8,7 @@ import * as MENU from '../menu.js'
 
 import ammo_machinegun from './ammo_machinegun.js';
 
-class CraftSpeederD extends Craft {
+class CraftSpeederD extends AbstractCraft {
     constructor(filename) { super(filename); }
 
     update(delta, elapsed) {
@@ -57,6 +57,16 @@ class CraftSpeederD extends Craft {
                 console.log("RIGHT MOUSE BUTTON");
                 break;
         }
+    }
+
+    getGamePlayParams() {
+        let params = super.getGamePlayParams();
+
+        params.health = 500;
+        params.score = 0;
+        params.experience = 0;
+
+        return params;
     }
 }
 

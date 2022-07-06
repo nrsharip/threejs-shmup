@@ -35,6 +35,7 @@ export default class AsbtractGameObjectManager {
         }
         obj3d.userData.timeCreated = GAME.time.elapsed;
         obj3d.userData.timeElapsed = 0;
+        obj3d.userData.gameplay = this.getGamePlayParams();
         return obj3d;
     }
     
@@ -65,6 +66,8 @@ export default class AsbtractGameObjectManager {
     getInstanceAvailable(index) { return GAME.instances.getAvailable(this.glbFilename, index); }
     
     getInstanceInUse(index) { return GAME.instances.getInUse(this.glbFilename, index); }
+
+    getGamePlayParams() { throw new Error("Abstract Method"); }
 
     update(delta, elapsed) { throw new Error("Abstract Method"); }
 

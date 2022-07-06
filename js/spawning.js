@@ -11,9 +11,6 @@ export default class AsbtractSpawningObjectManager extends AsbtractGameObjectMan
             deltaMillis: 600 
         }
     }
-    
-    setSpawnEnabled(enabled) { this.spawn.enabled = enabled; }
-    setSpawnDelta(delta) { this.spawn.deltaMillis = delta; }
 
     update(delta, elapsed) {
         if (this.spawn.enabled && (elapsed - this.spawn.lastTime > this.spawn.deltaMillis) ) {
@@ -25,6 +22,23 @@ export default class AsbtractSpawningObjectManager extends AsbtractGameObjectMan
             this.addInstanceTo(GAME.graphics.scene, position, rotation, linear, angular);
         }
     }
+
+    onCollision(other) {
+    }
+
+    onUpdate(delta, elapsed) {
+        super.onUpdate(delta, elapsed);
+    }
+
+    onKeyboardKeyDown(event) {
+    }
+
+    onMouseDown(event) {
+    }
+
+    setSpawnEnabled(enabled) { this.spawn.enabled = enabled; }
+
+    setSpawnDelta(delta) { this.spawn.deltaMillis = delta; }
 
     spawnParameters() { throw new Error("Abstract Method"); }
 }

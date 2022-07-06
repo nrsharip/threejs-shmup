@@ -1,16 +1,15 @@
-import AbstractCraft from './craft.js'
+import AsbtractGameObjectManager from '../object.js'
 
 import * as THREE from 'three';
 import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
-class CraftSpeederA extends AbstractCraft {
+export default class AbstractAmmo extends AsbtractGameObjectManager {
     constructor(filename) { super(filename); }
 
     update(delta, elapsed) {
-        super.update(delta, elapsed);
     }
-
+    
     onCollision(other) {
     }
 
@@ -25,16 +24,8 @@ class CraftSpeederA extends AbstractCraft {
     }
 
     getGamePlayParams() {
-        let params = super.getGamePlayParams();
-
-        params.health = 80;
-
-        return params;
+        return Object.create({
+            damage: 20
+        });
     }
 }
-
-const craft_speederA = new CraftSpeederA("craft_speederA.glb");
-
-GAME.managers.push(craft_speederA);
-
-export default craft_speederA;
