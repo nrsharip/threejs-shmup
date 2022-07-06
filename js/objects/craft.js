@@ -28,8 +28,7 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
             if (!other.userData.gameplay.targetsHit.includes(this)) {
                 other.userData.gameplay.targetsHit.push(this);
 
-                //console.log(other);
-                //GAME.sounds.play(impacts[Math.floor(Math.random() * impacts.length)]);
+                GAME.sounds.play(impacts[Math.floor(Math.random() * impacts.length)]);
 
                 this.userData.gameplay.health -= other.userData.gameplay.damage;
                 if (this.userData.gameplay.health <= 0) {

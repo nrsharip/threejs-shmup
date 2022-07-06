@@ -77,6 +77,8 @@ GAME.state.onPhaseChange = function(phase) {
             break;
         case GAME.PHASES.GAME_PAUSED:
             break;
+        case GAME.PHASES.GAME_RESUMED:
+            break;
     }
 }
 
@@ -95,7 +97,7 @@ function loadAssets() {
     // Loading Sounds
     SOUNDS.queueFileNames([ FILES.sounds, FILES.impact ], (function() { 
         let loaded = 0;
-        let total = FILES.sounds.filenames.length;
+        let total = FILES.sounds.filenames.length + FILES.impact.filenames.length;
         return function(filename, buffer) {
             GAME.audioBuffers.add(filename, buffer);
             // All files loaded?
@@ -172,6 +174,7 @@ function render(timeElapsed) {
             // }
             break;
         case GAME.PHASES.GAME_STARTED:
+        case GAME.PHASES.GAME_RESUMED:
             PHYSICS.update(timeDelta);
 
             for (let manager of GAME.managers) {
@@ -225,6 +228,7 @@ KEYBOARD.addEventListener("keydown", function(event) {
         case GAME.PHASES.LOAD_COMPLETED:
             break;
         case GAME.PHASES.GAME_STARTED:
+        case GAME.PHASES.GAME_RESUMED:
             for (let value of Object.values(GAME.instances)) {
                 if (value.inuse) {
                     for (let obj3d of value.inuse) {
@@ -247,6 +251,7 @@ function processPause() {
         case GAME.PHASES.LOAD_COMPLETED:
             break;
         case GAME.PHASES.GAME_STARTED:
+        case GAME.PHASES.GAME_RESUMED:
             MENU.get("startButton").textContent = "Resume";
             document.getElementById("mainMenu").style.display = "block";
 
@@ -255,7 +260,7 @@ function processPause() {
         case GAME.PHASES.GAME_PAUSED:
             document.getElementById("mainMenu").style.display = "none";
 
-            GAME.state.phase = GAME.PHASES.GAME_STARTED;
+            GAME.state.phase = GAME.PHASES.GAME_RESUMED;
             break;
     }
 }
@@ -298,6 +303,7 @@ function whileMouseDown(event) {
         case GAME.PHASES.LOAD_COMPLETED:
             break;
         case GAME.PHASES.GAME_STARTED:
+        case GAME.PHASES.GAME_RESUMED:
             for (let value of Object.values(GAME.instances)) {
                 if (value.inuse) {
                     for (let obj3d of value.inuse) {
