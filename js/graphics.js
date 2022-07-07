@@ -76,10 +76,12 @@ function setupAmbLight() {
     return light;
 }
 
-function setupOrbitControls(camera, renderer) {
+function setupOrbitControls(camera, renderer, x, y, z) {
     // see https://threejs.org/docs/#examples/en/controls/OrbitControls
     const orbitControls = new OrbitControls( camera, renderer.domElement );
-    orbitControls.target.y = 0.5;
+    orbitControls.target.x = x;
+    orbitControls.target.y = y;
+    orbitControls.target.z = z;
     orbitControls.update();
     return orbitControls;
 }

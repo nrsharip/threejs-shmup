@@ -19,6 +19,16 @@ class CraftSpeederD extends AbstractCraft {
 
     update(delta, elapsed) {
         super.update(delta, elapsed);
+
+        MENU.get("sc").textContent = `SCORE: ${GAME.player.obj3d.userData.gameplay.score}`;
+        MENU.get("hp").textContent = `HEALTH: ${GAME.player.obj3d.userData.gameplay.health}`;
+        MENU.get("xp").textContent = `EXPERIENCE: ${GAME.player.obj3d.userData.gameplay.experience}`;
+        if (GAME.player.obj3d.userData.gameplay.destroyed) {
+            MENU.get("hp").style.color = "red";
+            MENU.get("hp").textContent = "GAME OVER";
+        } else {
+            MENU.get("hp").style.color = "white";
+        }
     }
     
     onCollision(other) {
@@ -39,11 +49,7 @@ class CraftSpeederD extends AbstractCraft {
     onUpdate(delta, elapsed) { 
         super.onUpdate(delta, elapsed);
 
-        if (this.userData.gameplay.destroyed) {
-            MENU.get("hp").style.color = "red";
-            MENU.get("hp").textContent = "GAME OVER";
-            return;
-        }
+        if (this.userData.gameplay.destroyed) { return; }
 
         RAYCASTER.intersects?.forEach((intersect, index, array) => {
             // [ { distance, point, face, faceIndex, object }, ... ]
@@ -88,9 +94,6 @@ class CraftSpeederD extends AbstractCraft {
         }
 
         //MENU.get("info").textContent = `x: ${this.position.x} y: ${this.position.y} z:${this.position.z}`;
-        MENU.get("sc").textContent = `SCORE: ${this.userData.gameplay.score}`;
-        MENU.get("hp").textContent = `HEALTH: ${this.userData.gameplay.health}`;
-        MENU.get("xp").textContent = `EXPERIENCE: ${this.userData.gameplay.experience}`;
     }
 
     onKeyboardKeyDown(event) {  }

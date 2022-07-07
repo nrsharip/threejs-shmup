@@ -123,7 +123,16 @@ const audioBuffers = {
     }
 }
 
-const managers = {};
+const managers = {
+    releaseAllInstances() {
+        for (let manager of Object.values(this)) { 
+            if (manager.releaseAllInstances) { 
+                manager.releaseAllInstances(); 
+            }
+        }
+    }
+};
+
 const player = {};
 const time = { delta: 0, elapsed: 0 };
 

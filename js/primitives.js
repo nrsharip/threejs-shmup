@@ -20,7 +20,7 @@ function makeCube() {
 function makeGround(w, h, d) {
     const geometry = new THREE.BoxGeometry( w, h, d, 1, 1, 1 );
     // https://stackoverflow.com/questions/14856339/how-do-i-change-the-opacity-of-an-stl-object-in-three-js-webgl
-    const material = new THREE.MeshPhongMaterial( { color: 0xFFFFFF, opacity: 0, transparent: true } );
+    const material = new THREE.MeshPhongMaterial( { color: 0xFFFFFF } );
     const ground = new THREE.Mesh(geometry, material);
     ground.receiveShadow = true;
 
@@ -29,7 +29,7 @@ function makeGround(w, h, d) {
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.magFilter = THREE.NearestFilter;
-        texture.repeat.set( 40, 40 );
+        texture.repeat.set( w, d );
 
         ground.material.map = texture;
         ground.material.needsUpdate = true;

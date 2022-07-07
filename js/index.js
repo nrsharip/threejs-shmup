@@ -36,10 +36,11 @@ const renderer = GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
 const camera = GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
 const scene = GAME.graphics.scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
 const clock = GAME.graphics.clock = new THREE.Clock();
-//const orbitControls = GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(camera, renderer);
+//const orbitControls = GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(camera, renderer, 0, -15, -40);
 
 window.GAME = GAME;
 
+let ground = undefined; 
 Ammo().then(function ( AmmoLib ) {
     Ammo = AmmoLib;
 
@@ -51,10 +52,11 @@ Ammo().then(function ( AmmoLib ) {
     scene.add(dirLight);
     
     // GROUND
-    let w = 100, h = 0.1, d = 30;
-    const ground = PRIMITIVES.makeGround(w, h, d);
+    let w = 300, h = 0.1, d = 200;
+    ground = PRIMITIVES.makeGround(w, h, d);
     ground["userData"].filename = "ground";
-    ground.position.y -= 0.05;
+    ground.position.y = -0.05;
+    ground.position.z = -50;
     // PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
     // PHYSICS.addRigidBody(ground);
     scene.add(ground);
@@ -67,13 +69,14 @@ GAME.state.onPhaseChange = function(phase) {
         case GAME.PHASES.INIT:
             break;
         case GAME.PHASES.LOAD_STARTED:
-            loadAssets();
+            loadStarted();
             requestAnimationFrame( render );
             break;
         case GAME.PHASES.LOAD_COMPLETED:
             loadCompleted();
             break;
         case GAME.PHASES.GAME_STARTED:
+            gameStarted();
             break;
         case GAME.PHASES.GAME_PAUSED:
             break;
@@ -82,7 +85,7 @@ GAME.state.onPhaseChange = function(phase) {
     }
 }
 
-function loadAssets() {
+function loadStarted() {
     let processes = 2;
     // Loading GLTFs
     GLTFS.queueFileNames([ FILES.craft, FILES.ammo ], (function() {
@@ -132,15 +135,24 @@ function loadCompleted() {
     GAME.audioBuffers.spread("impactTin_medium_003.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_004.ogg", 20);
 
-    // UNCOMMENT FOR SPIRAL
-    // const gridCell = new Vector2(0, 0);
-    // GAME.managers.forEach((obj) => {
-    //     let obj3d = obj.getInstanceAvailable(0);
-    //     UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
-    //     obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
-    //     UTILS.spiralGetNext(gridCell);
-    // });
+    const gridCell = new THREE.Vector2(0, 0);
+    Object.values(GAME.managers).forEach((obj) => {
+        if (!obj.getInstanceAvailable) { return; }
+        let obj3d = obj.getInstanceAvailable(0);
+        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
+        obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
+        UTILS.spiralGetNext(gridCell);
+    });
+}
 
+function gameStarted() {
+    GAME.managers.releaseAllInstances();
+
+    // https://stackoverflow.com/questions/14856339/how-do-i-change-the-opacity-of-an-stl-object-in-three-js-webgl
+    //ground.material.opacity = 0;
+    //ground.material.transparent = true;
+    ground.material.visible = false;
+            
     // Non-player characters
     craft_miner.setSpawnDelta(1600);
     craft_miner.setSpawnEnabled(false);
@@ -189,7 +201,9 @@ function render(timeElapsed) {
             PHYSICS.update(timeDelta);
 
             for (let manager of Object.values(GAME.managers)) {
-                manager.update(timeDelta, timeElapsed);
+                if (manager.update) {
+                    manager.update(timeDelta, timeElapsed);
+                }
             }
 
             for (let value of Object.values(GAME.instances)) {
@@ -217,6 +231,11 @@ MENU.addEventListener("startButton", "click", function() {
     document.getElementById("mainMenu").style.display = "none";
 
     GAME.state.phase = GAME.PHASES.GAME_STARTED;
+});
+MENU.addEventListener("resumeButton", "click", function() {
+    document.getElementById("mainMenu").style.display = "none";
+
+    GAME.state.phase = GAME.PHASES.GAME_RESUMED;
 });
 
 MENU.addEventListener("menuMobile", "click", function() {
@@ -263,8 +282,8 @@ function processPause() {
             break;
         case GAME.PHASES.GAME_STARTED:
         case GAME.PHASES.GAME_RESUMED:
-            MENU.get("startButton").textContent = "Resume";
-            document.getElementById("mainMenu").style.display = "block";
+            MENU.get("resumeButton").style.display = "block";
+            MENU.get("mainMenu").style.display = "block";
             
             MENU.get("sc").textContent = ``;
             MENU.get("hp").textContent = ``;
@@ -273,7 +292,7 @@ function processPause() {
             GAME.state.phase = GAME.PHASES.GAME_PAUSED;
             break;
         case GAME.PHASES.GAME_PAUSED:
-            document.getElementById("mainMenu").style.display = "none";
+            MENU.get("mainMenu").style.display = "none";
 
             GAME.state.phase = GAME.PHASES.GAME_RESUMED;
             break;

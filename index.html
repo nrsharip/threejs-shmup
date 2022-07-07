@@ -67,6 +67,10 @@
 				text-align: center;
 			}
 
+			#resumeButton {
+				display: none;
+			}
+			
 			/* UI RELATED */
 			.gameui {
 				width: 100%;
@@ -127,13 +131,13 @@
 			<tr>
 				<td class="columnSide"></td>
 				<td class="columnMain">
-					<button id="startButton" class="menuButton">START</button>
+					<button id="resumeButton" class="menuButton">Resume</button>
+					<button id="startButton" class="menuButton">New Game</button>
 					<!-- https://stackoverflow.com/questions/14750078/style-disabled-button-with-css -->
-					<button class="menuButton" disabled>Single player</button>
-					<button class="menuButton" disabled>Multiplayer player</button>
+					<!-- <button class="menuButton" disabled>Multiplayer player</button>
 					<button class="menuButton" disabled>Settings</button>
 					<button class="menuButton" disabled>About</button>
-					<button class="menuButton" disabled>Quit</button>
+					<button class="menuButton" disabled>Quit</button> -->
 				</td>
 				<td class="columnSide"></td>
 			</tr>

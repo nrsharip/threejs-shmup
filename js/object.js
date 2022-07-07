@@ -75,7 +75,15 @@ export default class AsbtractGameObjectManager {
         PHYSICS.removeRigidBody(this);
         GAME.instances.releaseInstance(this); 
     }
-    
+
+    releaseAllInstances() {
+        // https://www.freecodecamp.org/news/how-to-clone-an-array-in-javascript-1d3183468f6a/
+        let tmpArray = [...GAME.instances[this.glbFilename].inuse];
+
+        let obj3d = undefined;
+        while (obj3d = tmpArray.pop()) { obj3d?.userData?.releaseInstance(); }
+    }
+
     resetGamePlayParams() { throw new Error("Abstract Method"); }
 
     update(delta, elapsed) { throw new Error("Abstract Method"); }
