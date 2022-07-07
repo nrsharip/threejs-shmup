@@ -6,8 +6,6 @@ import * as RAYCASTER from './raycaster.js';
 import * as FILES from './files.js';
 import * as GAME from './game.js'
 import * as PHYSICS from './physics.js'
-import * as KEYBOARD from './keyboard.js'
-import * as MENU from './menu.js'
 import * as GLTFS from './gltfs.js'
 import * as SOUNDS from './sounds.js'
 import * as GRAPHICS from './graphics.js'
@@ -191,13 +189,13 @@ function render(timeElapsed) {
 
     RAYCASTER.getIntersects(GAME.graphics.scene.children, RAYCASTER.pointer, GAME.graphics.camera);
 
-    // MENU.get("info").style.display = "block";
+    // document.getElementById("info").style.display = "block";
     // let available1 = GAME.instances["ammo_machinegun.glb"]?.available.length;
     // let inuse1 = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
-    // MENU.get("info").textContent = `inuse: ${inuse1} available: ${available1};`
+    // document.getElementById("info").textContent = `inuse: ${inuse1} available: ${available1};`
     // let available2 = GAME.instances["craft_speederC.glb"]?.available.length;
     // let inuse2 = GAME.instances["craft_speederC.glb"]?.inuse.length;
-    // MENU.get("info").textContent = `inuse: ${inuse2} available: ${available2}`;
+    // document.getElementById("info").textContent = `inuse: ${inuse2} available: ${available2}`;
 
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
@@ -239,22 +237,23 @@ function render(timeElapsed) {
     GAME.graphics.renderer.render( GAME.graphics.scene, GAME.graphics.camera );
 };
 
-MENU.addEventListener("startButton", "click", function() {
+document.getElementById("startButton").addEventListener("click", function() {
     document.getElementById("mainMenu").style.display = "none";
 
     GAME.state.phase = GAME.PHASES.GAME_STARTED;
-});
-MENU.addEventListener("resumeButton", "click", function() {
+}, false);
+document.getElementById("resumeButton").addEventListener("click", function() {
     document.getElementById("mainMenu").style.display = "none";
 
     GAME.state.phase = GAME.PHASES.GAME_RESUMED;
-});
-
-MENU.addEventListener("menuMobile", "click", function() {
+}, false);
+document.getElementById("menuMobile").addEventListener("click", function() {
     processPause();
-});
+}, false);
 
-KEYBOARD.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", onKeyDown);
+
+function onKeyDown(event) {
     //console.log(event);
     switch (event.code) {
         case 'Escape':
@@ -282,7 +281,7 @@ KEYBOARD.addEventListener("keydown", function(event) {
         case GAME.PHASES.GAME_PAUSED:
             break;
     }
-})
+}
 
 function processPause() {
     switch (GAME.state.phase) {
@@ -294,26 +293,22 @@ function processPause() {
             break;
         case GAME.PHASES.GAME_STARTED:
         case GAME.PHASES.GAME_RESUMED:
-            MENU.get("resumeButton").style.display = "block";
-            MENU.get("mainMenu").style.display = "block";
+            document.getElementById("resumeButton").style.display = "block";
+            document.getElementById("mainMenu").style.display = "block";
             
-            MENU.get("sc").textContent = ``;
-            MENU.get("hp").textContent = ``;
-            MENU.get("xp").textContent = ``;
+            document.getElementById("sc").textContent = ``;
+            document.getElementById("hp").textContent = ``;
+            document.getElementById("xp").textContent = ``;
             
             GAME.state.phase = GAME.PHASES.GAME_PAUSED;
             break;
         case GAME.PHASES.GAME_PAUSED:
-            MENU.get("mainMenu").style.display = "none";
+            document.getElementById("mainMenu").style.display = "none";
 
             GAME.state.phase = GAME.PHASES.GAME_RESUMED;
             break;
     }
 }
-
-// https://threejs.org/docs/#api/en/core/Raycaster
-window.addEventListener( 'pointermove', onPointerMove );
-function onPointerMove( event ) { calculateRaycasterPointer(event.clientX, event.clientY); }
 
 function calculateRaycasterPointer(x, y) {
     // calculate pointer position in normalized device coordinates (-1 to +1) for both components
@@ -321,14 +316,17 @@ function calculateRaycasterPointer(x, y) {
     RAYCASTER.pointer.y = - ( y / window.innerHeight ) * 2 + 1;
 }
 
-// https://stackoverflow.com/questions/15505272/javascript-while-mousedown
-// Assign events
-document.addEventListener("mousedown", mousedown);
-document.addEventListener("mouseup", mouseup);
-// Also clear the interval when user leaves the window with mouse
-document.addEventListener("mouseout", mouseup);
+// https://threejs.org/docs/#api/en/core/Raycaster
+document.addEventListener( 'pointermove', function ( event ) { 
+    calculateRaycasterPointer(event.clientX, event.clientY); 
+});
 
+// https://stackoverflow.com/questions/15505272/javascript-while-mousedown
 var mouseDownID = -1;  //Global ID of mouse down interval
+document.addEventListener("mousedown", mousedown); // Assign events
+document.addEventListener("mouseup", mouseup);
+document.addEventListener("mouseout", mouseup); // Also clear the interval when user leaves the window with mouse
+
 function mousedown(event) {
     if(mouseDownID == -1)  { //Prevent multimple loops!
         mouseDownID = setInterval(whileMouseDown, 1 /*execute every 1ms*/, event);
@@ -371,10 +369,7 @@ document.addEventListener('touchcancel', handleCancel);
 document.addEventListener('touchmove', handleMove);
 
 const ongoingTouches = [];
-
-function copyTouch({ identifier, pageX, pageY }) {
-    return { identifier, pageX, pageY };
-}
+function copyTouch({ identifier, pageX, pageY }) { return { identifier, pageX, pageY }; }
 
 function ongoingTouchIndexById(idToFind) {
     for (let i = 0; i < ongoingTouches.length; i++) {
