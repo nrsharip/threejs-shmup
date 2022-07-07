@@ -310,10 +310,12 @@ function processPause() {
 
 // https://threejs.org/docs/#api/en/core/Raycaster
 window.addEventListener( 'pointermove', onPointerMove );
-function onPointerMove( event ) {
+function onPointerMove( event ) { calculateRaycasterPointer(event.clientX, event.clientY); }
+
+function calculateRaycasterPointer(x, y) {
     // calculate pointer position in normalized device coordinates (-1 to +1) for both components
-    RAYCASTER.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    RAYCASTER.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    RAYCASTER.pointer.x = ( x / window.innerWidth ) * 2 - 1;
+    RAYCASTER.pointer.y = - ( y / window.innerHeight ) * 2 + 1;
 }
 
 // https://stackoverflow.com/questions/15505272/javascript-while-mousedown
@@ -322,6 +324,7 @@ document.addEventListener("mousedown", mousedown);
 document.addEventListener("mouseup", mouseup);
 // Also clear the interval when user leaves the window with mouse
 document.addEventListener("mouseout", mouseup);
+
 var mouseDownID = -1;  //Global ID of mouse down interval
 function mousedown(event) {
     if(mouseDownID == -1)  { //Prevent multimple loops!
@@ -354,6 +357,109 @@ function whileMouseDown(event) {
             break;
         case GAME.PHASES.GAME_PAUSED:
             break;
+    }
+}
+
+// https://discourse.threejs.org/t/touch-in-three-js/23382/3
+// https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+document.addEventListener('touchstart', handleStart);
+document.addEventListener('touchend', handleEnd);
+document.addEventListener('touchcancel', handleCancel);
+document.addEventListener('touchmove', handleMove);
+
+const ongoingTouches = [];
+
+function copyTouch({ identifier, pageX, pageY }) {
+    return { identifier, pageX, pageY };
+}
+
+function ongoingTouchIndexById(idToFind) {
+    for (let i = 0; i < ongoingTouches.length; i++) {
+        const id = ongoingTouches[i].identifier;
+  
+        if (id == idToFind) { return i; }
+    }
+    return -1;
+}
+
+function handleStart(event) {
+    //event.preventDefault();
+    //console.log('touchstart.');
+    const touches = event.changedTouches;
+  
+    for (let i = 0; i < touches.length; i++) {
+        //console.log(`touchstart: ${i}.`);
+        ongoingTouches.push(copyTouch(touches[i]));
+
+        //console.log(`next( ${ touches[i].pageX }, ${ touches[i].pageY } );`);
+        calculateRaycasterPointer(touches[i].pageX, touches[i].pageY);
+    }
+
+    if(mouseDownID == -1)  { //Prevent multimple loops!
+        mouseDownID = setInterval(whileMouseDown, 1 /*execute every 1ms*/, event);
+    }
+}
+
+function handleMove(event) {
+    //event.preventDefault();
+    const touches = event.changedTouches;
+  
+    for (let i = 0; i < touches.length; i++) {
+        const idx = ongoingTouchIndexById(touches[i].identifier);
+    
+        if (idx >= 0) {
+            //console.log(`continuing touch ${ idx }`);
+            //console.log(`prev( ${ ongoingTouches[idx].pageX }, ${ ongoingTouches[idx].pageY } );`);
+            //console.log(`next( ${ touches[i].pageX }, ${ touches[i].pageY } );`);
+    
+            calculateRaycasterPointer(touches[i].pageX, touches[i].pageY);
+
+            ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+        } else {
+            console.log('can\'t figure out which touch to continue');
+        } 
+    }
+}
+
+function handleEnd(event) {
+    //event.preventDefault();
+    //console.log("touchend");
+    const touches = event.changedTouches;
+  
+    for (let i = 0; i < touches.length; i++) {
+        let idx = ongoingTouchIndexById(touches[i].identifier);
+    
+        if (idx >= 0) {
+            //console.log(`prev( ${ ongoingTouches[idx].pageX }, ${ ongoingTouches[idx].pageY } );`);
+            //console.log(`next( ${ touches[i].pageX }, ${ touches[i].pageY } );`);
+
+            calculateRaycasterPointer(touches[i].pageX, touches[i].pageY);
+
+            ongoingTouches.splice(idx, 1);  // remove it; we're done
+        } else {
+            log('can\'t figure out which touch to end');
+        }
+    }
+
+    if(mouseDownID != -1) {  //Only stop if exists
+        clearInterval(mouseDownID);
+        mouseDownID=-1;
+    }
+}
+
+function handleCancel(event) {
+    //event.preventDefault();
+    //console.log('touchcancel.');
+    const touches = event.changedTouches;
+  
+    for (let i = 0; i < touches.length; i++) {
+        let idx = ongoingTouchIndexById(touches[i].identifier);
+        ongoingTouches.splice(idx, 1);  // remove it; we're done
+    }
+
+    if(mouseDownID!=-1) {  //Only stop if exists
+        clearInterval(mouseDownID);
+        mouseDownID=-1;
     }
 }
 

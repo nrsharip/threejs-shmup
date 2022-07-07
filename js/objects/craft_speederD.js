@@ -104,43 +104,50 @@ class CraftSpeederD extends AbstractCraft {
     onKeyboardKeyDown(event) {  }
 
     onMouseDown(event) {
+        let shoot = () => {
+            if (GAME.time.elapsed - this.userData.gameplay.lastReleased > this.userData.gameplay.deltaMillis) {
+                GAME.sounds.play("122103__greatmganga__dshk-01.wav");
+
+                this.userData.boundingBox.getSize(UTILS.tmpV3);
+
+                let x = this.position.x;
+                let y = this.position.y;
+                let z = this.position.z - UTILS.tmpV3.z/2 - 1;
+
+                let makeBullet = (x, y, z, x1, y1, z1) => {
+                    UTILS.tmpV2.set(x, y, z);
+                    let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
+                    obj3d.userData.gameplay.releasedBy = this;
+                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(x1, y1, z1));                         
+                }
+
+                if (this.userData.gameplay.experience > 100) {
+                    makeBullet(x - 1, y, z, -200, 0, -1500, this);
+                    makeBullet(x, y, z, 0, 0, -1500, this);
+                    makeBullet(x + 1, y, z, 200, 0, -1500, this);
+                } else if (this.userData.gameplay.experience > 50) {
+                    makeBullet(x - 1, y, z, 0, 0, -1500, this);
+                    makeBullet(x + 1, y, z, 0, 0, -1500, this);
+                } else {
+                    makeBullet(x, y, z, 0, 0, -1500, this);
+                }
+
+                this.userData.gameplay.lastReleased = GAME.time.elapsed;
+            }
+        }
+
         switch(event.button) {
             case 0:
-                if (GAME.time.elapsed - this.userData.gameplay.lastReleased > this.userData.gameplay.deltaMillis) {
-                    GAME.sounds.play("122103__greatmganga__dshk-01.wav");
-
-                    this.userData.boundingBox.getSize(UTILS.tmpV3);
-
-                    let x = this.position.x;
-                    let y = this.position.y;
-                    let z = this.position.z - UTILS.tmpV3.z/2 - 1;
-
-                    function makeBullet(x, y, z, x1, y1, z1, obj) {
-                        UTILS.tmpV2.set(x, y, z);
-                        let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
-                        obj3d.userData.gameplay.releasedBy = obj;
-                        PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(x1, y1, z1));                         
-                    }
-
-                    if (this.userData.gameplay.experience > 100) {
-                        makeBullet(x - 1, y, z, -200, 0, -1500, this);
-                        makeBullet(x, y, z, 0, 0, -1500, this);
-                        makeBullet(x + 1, y, z, 200, 0, -1500, this);
-                    } else if (this.userData.gameplay.experience > 50) {
-                        makeBullet(x - 1, y, z, 0, 0, -1500, this);
-                        makeBullet(x + 1, y, z, 0, 0, -1500, this);
-                    } else {
-                        makeBullet(x, y, z, 0, 0, -1500, this);
-                    }
-
-                    this.userData.gameplay.lastReleased = GAME.time.elapsed;
-                }
+                shoot();
                 break;
             case 1:
                 console.log("MIDDLE MOUSE BUTTON");
                 break;
             case 2:
                 console.log("RIGHT MOUSE BUTTON");
+                break;
+            default:
+                shoot();
                 break;
         }
     }
