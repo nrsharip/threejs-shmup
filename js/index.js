@@ -29,44 +29,12 @@ if ( !WebGLCheck.isWebGLAvailable() ) {
     throw new Error(warning.textContent);
 }
 
-GAME.state.phase = GAME.PHASES.INIT;
-
-// GRAPHICS INIT
-const renderer = GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
-const camera = GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
-const scene = GAME.graphics.scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
-const clock = GAME.graphics.clock = new THREE.Clock();
-//const orbitControls = GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(camera, renderer, 0, -15, -40);
-
 window.GAME = GAME;
-
-let ground = undefined; 
-Ammo().then(function ( AmmoLib ) {
-    Ammo = AmmoLib;
-
-    PHYSICS.init();
-    PHYSICS.dynamicsWorld.setGravity( new Ammo.btVector3( 0, 0, 0 ) );
-
-    // SCENE OBJECTS
-    const dirLight = GRAPHICS.setupDirLight();
-    scene.add(dirLight);
-    
-    // GROUND
-    let w = 300, h = 0.1, d = 200;
-    ground = PRIMITIVES.makeGround(w, h, d);
-    ground["userData"].filename = "ground";
-    ground.position.y = -0.05;
-    ground.position.z = -50;
-    // PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
-    // PHYSICS.addRigidBody(ground);
-    scene.add(ground);
-
-    GAME.state.phase = GAME.PHASES.LOAD_STARTED;
-})
 
 GAME.state.onPhaseChange = function(phase) {
     switch (phase) {
         case GAME.PHASES.INIT:
+            init();
             break;
         case GAME.PHASES.LOAD_STARTED:
             loadStarted();
@@ -83,6 +51,41 @@ GAME.state.onPhaseChange = function(phase) {
         case GAME.PHASES.GAME_RESUMED:
             break;
     }
+}
+
+GAME.state.phase = GAME.PHASES.INIT;
+
+let ground = undefined;
+function init() {
+    // GRAPHICS INIT
+    GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
+    GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
+    GAME.graphics.scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
+    GAME.graphics.clock = new THREE.Clock();
+    //GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(camera, renderer, 0, -15, -40);
+
+    Ammo().then(function ( AmmoLib ) {
+        Ammo = AmmoLib;
+
+        PHYSICS.init();
+        PHYSICS.dynamicsWorld.setGravity( new Ammo.btVector3( 0, 0, 0 ) );
+
+        // SCENE OBJECTS
+        const dirLight = GRAPHICS.setupDirLight();
+        GAME.graphics.scene.add(dirLight);
+        
+        // GROUND
+        let w = 300, h = 0.1, d = 200;
+        ground = PRIMITIVES.makeGround(w, h, d);
+        ground["userData"].filename = "ground";
+        ground.position.y = -0.05;
+        ground.position.z = -50;
+        // PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
+        // PHYSICS.addRigidBody(ground);
+        GAME.graphics.scene.add(ground);
+
+        GAME.state.phase = GAME.PHASES.LOAD_STARTED;
+    })
 }
 
 function loadStarted() {
@@ -126,7 +129,7 @@ function loadCompleted() {
         if (!obj.getInstanceAvailable) { return; }
         let obj3d = obj.getInstanceAvailable(0);
         UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
-        obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
+        obj3d = obj.addInstanceTo(GAME.graphics.scene, UTILS.tmpV1);
         UTILS.spiralGetNext(gridCell);
     });
 
@@ -175,7 +178,7 @@ function gameStarted() {
     // Player
     craft_speederD.setSpawnEnabled(false);
     
-    let obj3d = craft_speederD.addInstanceTo(scene, UTILS.tmpV1.set(0, 0, -10));
+    let obj3d = craft_speederD.addInstanceTo(GAME.graphics.scene, UTILS.tmpV1.set(0, 0, -10));
     GAME.player["manager"] = craft_speederD;
     GAME.player["obj3d"] = craft_speederD.getInstanceInUse(0);
 }
@@ -183,10 +186,10 @@ function gameStarted() {
 function render(timeElapsed) {
     requestAnimationFrame( render );
 
-    const timeDelta = GAME.time.delta = clock.getDelta();
+    const timeDelta = GAME.time.delta = GAME.graphics.clock.getDelta();
     GAME.time.elapsed = timeElapsed;
 
-    RAYCASTER.getIntersects(scene.children, RAYCASTER.pointer, camera);
+    RAYCASTER.getIntersects(GAME.graphics.scene.children, RAYCASTER.pointer, GAME.graphics.camera);
 
     // MENU.get("info").style.display = "block";
     // let available1 = GAME.instances["ammo_machinegun.glb"]?.available.length;
@@ -227,13 +230,13 @@ function render(timeElapsed) {
     }
 
     // see https://threejs.org/manual/#en/responsive
-    if (UTILS.resizeRendererToDisplaySize(renderer)) {
-        const canvas = renderer.domElement;
-        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-        camera.updateProjectionMatrix();
+    if (UTILS.resizeRendererToDisplaySize(GAME.graphics.renderer)) {
+        const canvas = GAME.graphics.renderer.domElement;
+        GAME.graphics.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        GAME.graphics.camera.updateProjectionMatrix();
     }
 
-    renderer.render( scene, camera );
+    GAME.graphics.renderer.render( GAME.graphics.scene, GAME.graphics.camera );
 };
 
 MENU.addEventListener("startButton", "click", function() {
