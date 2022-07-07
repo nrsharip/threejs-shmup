@@ -36,6 +36,7 @@
 
 			/* MENU RELATED */
 			.menu {
+				display: table;
 				width: 100%;
 				/* https://stackoverflow.com/questions/47344626/put-a-table-in-a-canvas-in-html */
 				position: absolute;
@@ -73,6 +74,7 @@
 			
 			/* UI RELATED */
 			.gameui {
+				display: table;
 				width: 100%;
 				/* https://stackoverflow.com/questions/47344626/put-a-table-in-a-canvas-in-html */
 				position: absolute;
@@ -135,7 +137,7 @@
 				<td class="columnSide"></td>
 				<td class="columnMain">
 					<button id="resumeButton" class="menuButton">Resume</button>
-					<button id="startButton" class="menuButton">New Game</button>
+					<button id="startButton" class="menuButton" disabled>New Game</button>
 					<!-- https://stackoverflow.com/questions/14750078/style-disabled-button-with-css -->
 					<!-- <button class="menuButton" disabled>Multiplayer player</button>
 					<button class="menuButton" disabled>Settings</button>

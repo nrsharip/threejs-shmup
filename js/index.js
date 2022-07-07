@@ -133,6 +133,7 @@ function loadCompleted() {
     });
 
     GAME.graphics.scene.fog = new THREE.Fog( 0x96b0bc, 90, 110 );
+    document.getElementById("startButton").disabled = false;
 }
 
 function spreadSounds() {
@@ -312,7 +313,7 @@ function onPausePressed() {
         case GAME.PHASES.GAME_STARTED:
         case GAME.PHASES.GAME_RESUMED:
             document.getElementById("resumeButton").style.display = "block";
-            document.getElementById("mainMenu").style.display = "block";
+            document.getElementById("mainMenu").style.display = "table";
             
             document.getElementById("sc").textContent = ``;
             document.getElementById("hp").textContent = ``;

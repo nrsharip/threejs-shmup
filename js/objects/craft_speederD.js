@@ -120,7 +120,12 @@ class CraftSpeederD extends AbstractCraft {
                     PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(x1, y1, z1));                         
                 }
 
-                if (this.userData.gameplay.experience > 100) {
+                if (this.userData.gameplay.experience > 150) {
+                    makeBullet(x - 1.5, y, z, -200, 0, -1500, this);
+                    makeBullet(x - 0.75, y, z, -50, 0, -1500, this);
+                    makeBullet(x + 0.75, y, z, 50, 0, -1500, this);
+                    makeBullet(x + 1.5, y, z, 200, 0, -1500, this);
+                } else if (this.userData.gameplay.experience > 100) {
                     makeBullet(x - 1, y, z, -200, 0, -1500, this);
                     makeBullet(x, y, z, 0, 0, -1500, this);
                     makeBullet(x + 1, y, z, 200, 0, -1500, this);
