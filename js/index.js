@@ -115,6 +115,12 @@ function loadCompleted() {
     craft_speederD.createInstances(1000, 1);
 
     GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 100);
+    GAME.audioBuffers.spread("587186__derplayer__explosion-00.wav", 10);
+    GAME.audioBuffers.spread("587185__derplayer__explosion-01.wav", 10);
+    GAME.audioBuffers.spread("587184__derplayer__explosion-02.wav", 10);
+    GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 10);
+    GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 10);
+    GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 10);
     GAME.audioBuffers.spread("impactTin_medium_000.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_001.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_002.ogg", 20);
@@ -131,12 +137,12 @@ function loadCompleted() {
     // });
 
     // Non-player characters
-    craft_miner.setSpawnDelta(1000);
-    craft_miner.setSpawnEnabled(true);
-    craft_speederA.setSpawnDelta(800);
-    craft_speederA.setSpawnEnabled(true);
-    craft_speederB.setSpawnDelta(600);
-    craft_speederB.setSpawnEnabled(true);
+    craft_miner.setSpawnDelta(1600);
+    craft_miner.setSpawnEnabled(false);
+    craft_speederA.setSpawnDelta(1200);
+    craft_speederA.setSpawnEnabled(false);
+    craft_speederB.setSpawnDelta(800);
+    craft_speederB.setSpawnEnabled(false);
     craft_speederC.setSpawnDelta(400);
     craft_speederC.setSpawnEnabled(true);
 
@@ -160,8 +166,8 @@ function render(timeElapsed) {
     // let available1 = GAME.instances["ammo_machinegun.glb"]?.available.length;
     // let inuse1 = GAME.instances["ammo_machinegun.glb"]?.inuse.length;
     // MENU.get("info").textContent = `inuse: ${inuse1} available: ${available1};`
-    // let available2 = GAME.instances["craft_speederA.glb"]?.available.length;
-    // let inuse2 = GAME.instances["craft_speederA.glb"]?.inuse.length;
+    // let available2 = GAME.instances["craft_speederC.glb"]?.available.length;
+    // let inuse2 = GAME.instances["craft_speederC.glb"]?.inuse.length;
     // MENU.get("info").textContent = `inuse: ${inuse2} available: ${available2}`;
 
     switch (GAME.state.phase) {
@@ -177,7 +183,7 @@ function render(timeElapsed) {
         case GAME.PHASES.GAME_RESUMED:
             PHYSICS.update(timeDelta);
 
-            for (let manager of GAME.managers) {
+            for (let manager of Object.values(GAME.managers)) {
                 manager.update(timeDelta, timeElapsed);
             }
 
@@ -287,7 +293,7 @@ document.addEventListener("mouseout", mouseup);
 var mouseDownID = -1;  //Global ID of mouse down interval
 function mousedown(event) {
     if(mouseDownID == -1)  { //Prevent multimple loops!
-        mouseDownID = setInterval(whileMouseDown, 50 /*execute every 100ms*/, event);
+        mouseDownID = setInterval(whileMouseDown, 1 /*execute every 1ms*/, event);
     }
 }
 

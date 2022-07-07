@@ -28,7 +28,7 @@ class CraftSpeederA extends AbstractCraft {
     resetGamePlayParams(params) {
         super.resetGamePlayParams(params);
 
-        params.health = 80;
+        params.health = 160;
 
         return params;
     }
@@ -36,6 +36,6 @@ class CraftSpeederA extends AbstractCraft {
 
 const craft_speederA = new CraftSpeederA("craft_speederA.glb");
 
-GAME.managers.push(craft_speederA);
+GAME.managers.craft_speederA = craft_speederA;
 
 export default craft_speederA;

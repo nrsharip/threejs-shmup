@@ -42,6 +42,6 @@ class AmmoMachinegun extends AbstractAmmo {
 
 const ammo_machinegun = new AmmoMachinegun("ammo_machinegun.glb");
 
-GAME.managers.push(ammo_machinegun);
+GAME.managers.ammo_machinegun = ammo_machinegun;
 
 export default ammo_machinegun;

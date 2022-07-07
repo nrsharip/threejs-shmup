@@ -50,6 +50,12 @@ export const sounds = {
     prefix: "assets/audio/",
     filenames: [
         "122103__greatmganga__dshk-01.wav", // https://freesound.org/people/greatmganga/sounds/122103/
+        "587186__derplayer__explosion-00.wav", // https://freesound.org/people/derplayer/sounds/587186/
+        "587185__derplayer__explosion-01.wav", // https://freesound.org/people/derplayer/sounds/587185/
+        "587184__derplayer__explosion-02.wav", // https://freesound.org/people/derplayer/sounds/587184/
+        "587183__derplayer__explosion-03.wav", // https://freesound.org/people/derplayer/sounds/587183/
+        "587190__derplayer__explosion-04.wav", // https://freesound.org/people/derplayer/sounds/587190/
+        "587189__derplayer__explosion-05.wav", // https://freesound.org/people/derplayer/sounds/587190/
     ]
 }
 

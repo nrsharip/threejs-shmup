@@ -28,7 +28,7 @@ class CraftMiner extends AbstractCraft {
     resetGamePlayParams(params) {
         super.resetGamePlayParams(params);
 
-        params.health = 100;
+        params.health = 200;
 
         return params;
     }
@@ -36,6 +36,6 @@ class CraftMiner extends AbstractCraft {
 
 const craft_miner = new CraftMiner("craft_miner.glb");
 
-GAME.managers.push(craft_miner);
+GAME.managers.craft_miner = craft_miner;
 
 export default craft_miner;

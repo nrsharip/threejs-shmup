@@ -123,7 +123,7 @@ const audioBuffers = {
     }
 }
 
-const managers = [];
+const managers = {};
 const player = {};
 const time = { delta: 0, elapsed: 0 };
 

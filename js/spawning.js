@@ -41,5 +41,7 @@ export default class AsbtractSpawningObjectManager extends AsbtractGameObjectMan
 
     setSpawnDelta(delta) { this.spawn.deltaMillis = delta; }
 
+    getSpawnDelta() { return this.spawn.deltaMillis; }
+
     spawnParameters() { throw new Error("Abstract Method"); }
 }
