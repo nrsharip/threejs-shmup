@@ -75,7 +75,7 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
     spawnParameters() {
         let tmp1 = new THREE.Object3D();
-        tmp1.position.set(160 * Math.random() - 80, 0, -80);        // position
+        tmp1.position.set(200 * Math.random() - 100, 0, -100);      // position
         tmp1.lookAt(GAME.player.obj3d.position);                    // rotation
         UTILS.tmpV1.set(0, 0, 10).applyQuaternion(tmp1.quaternion); // linear velocity
         UTILS.tmpV2.set(0, 0, 0);                                   // angular velocity

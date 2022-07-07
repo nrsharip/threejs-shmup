@@ -74,3 +74,10 @@ export const impact = {
         "impactTin_medium_004.ogg",
     ]
 }
+
+export const digital = {
+    prefix: "assets/audio/kenney_digitalaudio/Audio/",
+    filenames: [
+        "powerUp1.ogg", // https://kenney.nl/assets/digital-audio
+    ]
+}

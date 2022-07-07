@@ -88,9 +88,10 @@ GAME.state.onPhaseChange = function(phase) {
 function loadStarted() {
     let processes = 2;
     // Loading GLTFs
-    GLTFS.queueFileNames([ FILES.craft, FILES.ammo ], (function() {
+    let groups = [ FILES.craft, FILES.ammo ];
+    GLTFS.queueFileNames(groups, (function() {
         let loaded = 0;
-        let total = FILES.craft.filenames.length + FILES.ammo.filenames.length;
+        let total = groups.reduce((prev, curr) => prev + curr.filenames.length, 0);
         return function(filename, gltf) {
             GAME.models.add(filename, gltf.scene);
             // All files loaded?
@@ -98,9 +99,10 @@ function loadStarted() {
         }
     })());
     // Loading Sounds
-    SOUNDS.queueFileNames([ FILES.sounds, FILES.impact ], (function() { 
+    groups = [ FILES.sounds, FILES.impact, FILES.digital ];
+    SOUNDS.queueFileNames(groups, (function() { 
         let loaded = 0;
-        let total = FILES.sounds.filenames.length + FILES.impact.filenames.length;
+        let total = groups.reduce((prev, curr) => prev + curr.filenames.length, 0);
         return function(filename, buffer) {
             GAME.audioBuffers.add(filename, buffer);
             // All files loaded?
@@ -117,6 +119,21 @@ function loadCompleted() {
     craft_speederC.createInstances(1000, 50);
     craft_speederD.createInstances(1000, 1);
 
+    spreadSounds();
+
+    const gridCell = new THREE.Vector2(0, 0);
+    Object.values(GAME.managers).forEach((obj) => {
+        if (!obj.getInstanceAvailable) { return; }
+        let obj3d = obj.getInstanceAvailable(0);
+        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
+        obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
+        UTILS.spiralGetNext(gridCell);
+    });
+
+    GAME.graphics.scene.fog = new THREE.Fog( 0x96b0bc, 90, 110 );
+}
+
+function spreadSounds() {
     GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 100);
     GAME.audioBuffers.spread("587186__derplayer__explosion-00.wav", 10);
     GAME.audioBuffers.spread("587185__derplayer__explosion-01.wav", 10);
@@ -124,6 +141,7 @@ function loadCompleted() {
     GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 10);
     GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 10);
     GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 10);
+    GAME.audioBuffers.spread("powerUp1.ogg", 10);
     GAME.audioBuffers.spread("impactMetal_light_000.ogg", 20);
     GAME.audioBuffers.spread("impactMetal_light_001.ogg", 20);
     GAME.audioBuffers.spread("impactMetal_light_002.ogg", 20);
@@ -134,15 +152,6 @@ function loadCompleted() {
     GAME.audioBuffers.spread("impactTin_medium_002.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_003.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_004.ogg", 20);
-
-    const gridCell = new THREE.Vector2(0, 0);
-    Object.values(GAME.managers).forEach((obj) => {
-        if (!obj.getInstanceAvailable) { return; }
-        let obj3d = obj.getInstanceAvailable(0);
-        UTILS.tmpV1.set(gridCell.x * 3, obj3d.userData.center.y + 0.05 + 0.1, gridCell.y * 3 - 10);
-        obj3d = obj.addInstanceTo(scene, UTILS.tmpV1);
-        UTILS.spiralGetNext(gridCell);
-    });
 }
 
 function gameStarted() {

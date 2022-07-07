@@ -69,23 +69,28 @@ class CraftSpeederD extends AbstractCraft {
             if (this.userData.gameplay.deltaMillis > 1) { this.userData.gameplay.deltaMillis -= 0.5; }
 
             if (xp == 50) {
+                GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_speederB.setSpawnEnabled(true);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
             } else if (xp == 100) {
+                GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_speederA.setSpawnEnabled(true);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
             } else if (xp == 150) {
+                GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnEnabled(true);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
             } else if (xp == 200) {
+                GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
             } else if (xp == 300) {
+                GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
