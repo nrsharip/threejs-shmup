@@ -14,7 +14,18 @@ const impacts_metal = [
 ]
 
 class CraftSpeederD extends AbstractCraft {
-    constructor(filename) { super(filename); }
+    constructor(filename) { 
+        super(filename); 
+    
+        this.health = 1000;
+        this.damage = 40;
+
+        this.score = 0;
+        this.experience = 0;
+        // bullet releases
+        this.lastReleased = 0;
+        this.deltaMillis = 101;
+    }
 
     update(delta, elapsed) {
         super.update(delta, elapsed);
@@ -71,29 +82,48 @@ class CraftSpeederD extends AbstractCraft {
                 GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_speederB.setSpawnEnabled(true);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+
+                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 100) {
                 GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_speederA.setSpawnEnabled(true);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+
+                GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
+                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 150) {
                 GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnEnabled(true);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+
+                GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
+                GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
+                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 200) {
                 GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+
+                GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.1);
+                GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
+                GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
+                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 300) {
                 GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+
+                GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.1);
+                GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
+                GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
+                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             }
         }
 
@@ -159,18 +189,26 @@ class CraftSpeederD extends AbstractCraft {
     resetGamePlayParams(params) {
         super.resetGamePlayParams(params);
 
-        params.health = 1000;
-        params.score = 0;
-        params.experience = 0;
-
-        params.damage = 40;
-
+        params.score = this.score;
+        params.experience = this.experience;
         // bullet releases
-        params.lastReleased = 0;
-        params.deltaMillis = 101;
+        params.lastReleased = this.lastReleased;
+        params.deltaMillis = this.deltaMillis;
 
         return params;
     }
+
+    setScore(score) { this.score = score; }
+    getScore() { return this.score; }
+
+    setExperience(experience) { this.experience = experience; }
+    getExperience() { return this.experience; }
+
+    setLastReleased(lastReleased) { this.lastReleased = lastReleased; }
+    getLastReleased() { return this.lastReleased; }
+
+    setDeltaMillis(deltaMillis) { this.deltaMillis = deltaMillis; }
+    getDeltaMillis() { return this.deltaMillis; }
 }
 
 const craft_speederD = new CraftSpeederD("craft_speederD.glb");

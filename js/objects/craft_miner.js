@@ -1,11 +1,14 @@
 import AbstractCraft from './craft.js'
 
-import * as THREE from 'three';
 import * as GAME from '../game.js'
-import * as UTILS from '../utils.js'
 
 class CraftMiner extends AbstractCraft {
-    constructor(filename) { super(filename); }
+    constructor(filename) { 
+        super(filename); 
+    
+        this.health = 200;
+        this.damage = 30;
+    }
 
     update(delta, elapsed) {
         super.update(delta, elapsed);
@@ -27,10 +30,6 @@ class CraftMiner extends AbstractCraft {
 
     resetGamePlayParams(params) {
         super.resetGamePlayParams(params);
-
-        params.health = 200;
-
-        params.damage = 30;
 
         return params;
     }

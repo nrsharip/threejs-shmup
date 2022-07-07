@@ -4,7 +4,11 @@ import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
 class AmmoMachinegun extends AbstractAmmo {
-    constructor(filename) { super(filename); }
+    constructor(filename) { 
+        super(filename); 
+    
+        this.damage = 10;
+    }
 
     update(delta, elapsed) { 
         super.update(delta, elapsed);
@@ -33,8 +37,6 @@ class AmmoMachinegun extends AbstractAmmo {
 
     resetGamePlayParams(params) {
         super.resetGamePlayParams(params);
-
-        params.damage = 10;
 
         return params;
     }

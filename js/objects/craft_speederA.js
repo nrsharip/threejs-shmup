@@ -1,14 +1,15 @@
 import AbstractCraft from './craft.js'
 
-import * as THREE from 'three';
 import * as GAME from '../game.js'
-import * as UTILS from '../utils.js'
 
 class CraftSpeederA extends AbstractCraft {
     constructor(filename) { super(filename); }
 
     update(delta, elapsed) {
         super.update(delta, elapsed);
+
+        this.health = 160;
+        this.damage = 25;
     }
 
     onCollision(other) {
@@ -27,10 +28,6 @@ class CraftSpeederA extends AbstractCraft {
 
     resetGamePlayParams(params) {
         super.resetGamePlayParams(params);
-
-        params.health = 160;
-
-        params.damage = 25;
 
         return params;
     }

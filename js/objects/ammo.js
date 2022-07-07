@@ -1,11 +1,13 @@
 import AsbtractGameObjectManager from '../object.js'
 
-import * as THREE from 'three';
-import * as GAME from '../game.js'
-import * as UTILS from '../utils.js'
 
 export default class AbstractAmmo extends AsbtractGameObjectManager {
-    constructor(filename) { super(filename); }
+    constructor(filename) { 
+        super(filename); 
+    
+        this.damage = 20;
+        this.releasedBy = undefined;
+    }
 
     update(delta, elapsed) {
     }
@@ -26,8 +28,8 @@ export default class AbstractAmmo extends AsbtractGameObjectManager {
     resetGamePlayParams(params) {
         if (!params) { throw new Error("params must be an object") }
 
-        params.damage = 20;
-        params.releasedBy = undefined;
+        params.damage = this.damage;
+        params.releasedBy = this.releasedBy;
 
         if (params.targetsHit && params.targetsHit instanceof Array) {
             params.targetsHit.length = 0;
@@ -37,4 +39,10 @@ export default class AbstractAmmo extends AsbtractGameObjectManager {
 
         return params;
     }
+
+    setDamage(damage) { this.damage = damage; }
+    getDamage() { return this.damage; }
+
+    setReleasedBy(releasedBy) { this.releasedBy = releasedBy; }
+    getReleasedBy() { return this.releasedBy; }
 }

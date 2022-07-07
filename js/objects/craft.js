@@ -22,7 +22,13 @@ const explosions = [
 ]
 
 export default class AbstractCraft extends AsbtractSpawningObjectManager {
-    constructor(filename) { super(filename); }
+    constructor(filename) { 
+        super(filename); 
+    
+        this.health = 100;
+        this.destroyed = false;
+        this.damage = 10;
+    }
 
     update(delta, elapsed) {
         super.update(delta, elapsed);
@@ -87,10 +93,19 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
     resetGamePlayParams(params) {
         if (!params) { throw new Error("params must be an object") }
         
-        params.health = 100;
-        params.destroyed = false;
-        params.damage = 10;
+        params.health = this.health;
+        params.destroyed = this.destroyed;
+        params.damage = this.damage;
 
         return params;
     }
+
+    setHealth(health) { this.health = health; }
+    getHealth() { return this.health; }
+
+    setDestroyed(destroyed) { this.destroyed = destroyed; }
+    getDestroyed() { return this.destroyed; }
+
+    setDamage(damage) { this.damage = damage; }
+    getDamage() { return this.damage; }
 }
