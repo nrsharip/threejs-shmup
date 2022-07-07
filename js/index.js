@@ -33,6 +33,7 @@ GAME.state.onPhaseChange = function(phase) {
     switch (phase) {
         case GAME.PHASES.INIT:
             init();
+            initEvents();
             break;
         case GAME.PHASES.LOAD_STARTED:
             loadStarted();
@@ -237,27 +238,44 @@ function render(timeElapsed) {
     GAME.graphics.renderer.render( GAME.graphics.scene, GAME.graphics.camera );
 };
 
-document.getElementById("startButton").addEventListener("click", function() {
+function initEvents() {
+    document.getElementById("startButton").addEventListener("click", onClickStartButton, false);
+    document.getElementById("resumeButton").addEventListener("click", onClickResumeButton, false);
+    document.getElementById("menuMobileButton").addEventListener("click", onClickMenuMobileButton, false);
+    
+    document.addEventListener("keydown", onKeyDown);
+    
+    // https://threejs.org/docs/#api/en/core/Raycaster
+    document.addEventListener( 'pointermove', onPointerMove, false);
+    // https://stackoverflow.com/questions/15505272/javascript-while-mousedown
+    document.addEventListener("mousedown", onMouseDown); // Assign events
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mouseout", onMouseUp); // Also clear the interval when user leaves the window with mouse
+    
+    // https://discourse.threejs.org/t/touch-in-three-js/23382/3
+    // https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
+    document.addEventListener('touchstart', onTouchStart);
+    document.addEventListener('touchend', onTouchEnd);
+    document.addEventListener('touchcancel', onTouchCancel);
+    document.addEventListener('touchmove', onTouchMove);
+}
+
+function onClickStartButton() {
     document.getElementById("mainMenu").style.display = "none";
 
     GAME.state.phase = GAME.PHASES.GAME_STARTED;
-}, false);
-document.getElementById("resumeButton").addEventListener("click", function() {
+}
+function onClickResumeButton() {
     document.getElementById("mainMenu").style.display = "none";
 
     GAME.state.phase = GAME.PHASES.GAME_RESUMED;
-}, false);
-document.getElementById("menuMobile").addEventListener("click", function() {
-    processPause();
-}, false);
-
-document.addEventListener("keydown", onKeyDown);
+}
+function onClickMenuMobileButton() { onPausePressed(); }
 
 function onKeyDown(event) {
-    //console.log(event);
     switch (event.code) {
         case 'Escape':
-            processPause();
+            onPausePressed();
             break;
     }
 
@@ -283,7 +301,7 @@ function onKeyDown(event) {
     }
 }
 
-function processPause() {
+function onPausePressed() {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:
             break;
@@ -316,23 +334,17 @@ function calculateRaycasterPointer(x, y) {
     RAYCASTER.pointer.y = - ( y / window.innerHeight ) * 2 + 1;
 }
 
-// https://threejs.org/docs/#api/en/core/Raycaster
-document.addEventListener( 'pointermove', function ( event ) { 
-    calculateRaycasterPointer(event.clientX, event.clientY); 
-});
+function onPointerMove( event ) { calculateRaycasterPointer(event.clientX, event.clientY); }
+
 
 // https://stackoverflow.com/questions/15505272/javascript-while-mousedown
 var mouseDownID = -1;  //Global ID of mouse down interval
-document.addEventListener("mousedown", mousedown); // Assign events
-document.addEventListener("mouseup", mouseup);
-document.addEventListener("mouseout", mouseup); // Also clear the interval when user leaves the window with mouse
-
-function mousedown(event) {
+function onMouseDown(event) {
     if(mouseDownID == -1)  { //Prevent multimple loops!
         mouseDownID = setInterval(whileMouseDown, 1 /*execute every 1ms*/, event);
     }
 }
-function mouseup(event) {
+function onMouseUp(event) {
     if(mouseDownID!=-1) {  //Only stop if exists
         clearInterval(mouseDownID);
         mouseDownID=-1;
@@ -363,14 +375,8 @@ function whileMouseDown(event) {
 
 // https://discourse.threejs.org/t/touch-in-three-js/23382/3
 // https://developer.mozilla.org/en-US/docs/Web/API/Touch_events
-document.addEventListener('touchstart', handleStart);
-document.addEventListener('touchend', handleEnd);
-document.addEventListener('touchcancel', handleCancel);
-document.addEventListener('touchmove', handleMove);
-
 const ongoingTouches = [];
 function copyTouch({ identifier, pageX, pageY }) { return { identifier, pageX, pageY }; }
-
 function ongoingTouchIndexById(idToFind) {
     for (let i = 0; i < ongoingTouches.length; i++) {
         const id = ongoingTouches[i].identifier;
@@ -379,8 +385,7 @@ function ongoingTouchIndexById(idToFind) {
     }
     return -1;
 }
-
-function handleStart(event) {
+function onTouchStart(event) {
     //event.preventDefault();
     //console.log('touchstart.');
     const touches = event.changedTouches;
@@ -397,8 +402,7 @@ function handleStart(event) {
         mouseDownID = setInterval(whileMouseDown, 1 /*execute every 1ms*/, event);
     }
 }
-
-function handleMove(event) {
+function onTouchMove(event) {
     //event.preventDefault();
     const touches = event.changedTouches;
   
@@ -418,8 +422,7 @@ function handleMove(event) {
         } 
     }
 }
-
-function handleEnd(event) {
+function onTouchEnd(event) {
     //event.preventDefault();
     //console.log("touchend");
     const touches = event.changedTouches;
@@ -444,8 +447,7 @@ function handleEnd(event) {
         mouseDownID=-1;
     }
 }
-
-function handleCancel(event) {
+function onTouchCancel(event) {
     //event.preventDefault();
     //console.log('touchcancel.');
     const touches = event.changedTouches;
