@@ -16,7 +16,9 @@ export const craft = {
         "craft_speederA.glb",   
         "craft_speederB.glb",
         "craft_speederC.glb",   
-        "craft_speederD.glb",   
+        "craft_speederD.glb",
+        "turret_double.glb",
+        "turret_single.glb",
     ],
 
     onFileload(filename, gltf) {

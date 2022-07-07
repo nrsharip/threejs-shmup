@@ -257,7 +257,7 @@ function removeRigidBody(obj3d) {
 
     if (!rigidBody) { return; }
 
-    const index = obj3ds.indexOf(obj3ds);
+    const index = obj3ds.indexOf(obj3d);
     if (index > -1) { obj3ds.splice(index, 1); }
 
     dynamicsWorld.removeRigidBody(rigidBody);

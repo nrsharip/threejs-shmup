@@ -103,6 +103,13 @@ class CraftSpeederD extends AbstractCraft {
                 GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
                 GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 200) {
+                // adding single turret
+                let obj3d = GAME.managers.turret_single.acquireInstance();
+                obj3d.position.x = 0;        // measured in Blender
+                obj3d.position.y = 0.686095; // measured in Blender
+                obj3d.position.z = 0.411829; // measured in Blender
+                this.add(obj3d);
+
                 GAME.sounds.play("powerUp1.ogg");
                 GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);

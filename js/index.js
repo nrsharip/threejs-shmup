@@ -19,6 +19,8 @@ import craft_speederA from './objects/craft_speederA.js';
 import craft_speederB from './objects/craft_speederB.js';
 import craft_speederC from './objects/craft_speederC.js';
 import craft_speederD from './objects/craft_speederD.js';
+import turret_double from './objects/turret_double.js';
+import turret_single from './objects/turret_single.js';
 
 // see https://threejs.org/docs/index.html#manual/en/introduction/WebGL-compatibility-check
 if ( !WebGLCheck.isWebGLAvailable() ) {
@@ -120,6 +122,8 @@ function loadCompleted() {
     craft_speederB.createInstances(1000, 50);
     craft_speederC.createInstances(1000, 50);
     craft_speederD.createInstances(1000, 1);
+    turret_double.createInstances(1000, 1);
+    turret_single.createInstances(1000, 1);
 
     spreadSounds();
 

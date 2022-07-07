@@ -71,7 +71,8 @@ export default class AsbtractGameObjectManager {
     getInstanceInUse(index) { return GAME.instances.getInUse(this.glbFilename, index); }
 
     releaseInstance() {
-        PHYSICS.makeTranslation(this, UTILS.tmpV3.set(0,0,100));
+        this.position.set(0,0,123);
+        PHYSICS.makeTranslation(this, UTILS.tmpV3.set(0,0,123));
         PHYSICS.removeRigidBody(this);
         GAME.instances.releaseInstance(this); 
     }
