@@ -6,7 +6,13 @@ import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 import * as MENU from '../menu.js'
 
-import ammo_machinegun from './ammo_machinegun.js';
+const impacts_metal = [
+    "impactMetal_light_000.ogg",
+    "impactMetal_light_001.ogg",
+    "impactMetal_light_002.ogg",
+    "impactMetal_light_003.ogg",
+    "impactMetal_light_004.ogg",
+]
 
 class CraftSpeederD extends AbstractCraft {
     constructor(filename) { super(filename); }
@@ -17,16 +23,28 @@ class CraftSpeederD extends AbstractCraft {
     
     onCollision(other) {
         super.onCollision(other);
-        // console.log(other);
-        // if (other && other.userData) {
-        //     if (other.userData?.name == "ground") {
-        //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
-        //     }
-        // }
+
+        // speederD with another craft
+        if (other.userData.filename.startsWith("craft_")) {
+            GAME.sounds.play(impacts_metal[Math.floor(Math.random() * impacts_metal.length)]);
+
+            let damageThis = this.userData.gameplay.damage;
+            let damageOther = other.userData.gameplay.damage;
+
+            this.userData.gameplay.health -= damageOther;
+            other.userData.gameplay.health -= damageThis;
+        }
     }
 
     onUpdate(delta, elapsed) { 
         super.onUpdate(delta, elapsed);
+
+        if (this.userData.gameplay.destroyed) {
+            MENU.get("hp").style.color = "red";
+            MENU.get("hp").textContent = "GAME OVER";
+            return;
+        }
+
         RAYCASTER.intersects?.forEach((intersect, index, array) => {
             // [ { distance, point, face, faceIndex, object }, ... ]
             let name = intersect.object?.userData?.filename;
@@ -91,7 +109,7 @@ class CraftSpeederD extends AbstractCraft {
 
                     function makeBullet(x, y, z, x1, y1, z1, obj) {
                         UTILS.tmpV2.set(x, y, z);
-                        let obj3d = ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
+                        let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
                         obj3d.userData.gameplay.releasedBy = obj;
                         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(x1, y1, z1));                         
                     }
@@ -125,6 +143,8 @@ class CraftSpeederD extends AbstractCraft {
         params.health = 1000;
         params.score = 0;
         params.experience = 0;
+
+        params.damage = 40;
 
         // bullet releases
         params.lastReleased = 0;

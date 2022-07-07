@@ -62,7 +62,12 @@ export const sounds = {
 export const impact = {
     prefix: "assets/audio/kenney_impactsounds/Audio/",
     filenames: [
-        "impactTin_medium_000.ogg", // https://kenney.nl/assets/impact-sounds
+        "impactMetal_light_000.ogg", // https://kenney.nl/assets/impact-sounds
+        "impactMetal_light_001.ogg",
+        "impactMetal_light_002.ogg",
+        "impactMetal_light_003.ogg",
+        "impactMetal_light_004.ogg",
+        "impactTin_medium_000.ogg",
         "impactTin_medium_001.ogg",
         "impactTin_medium_002.ogg",
         "impactTin_medium_003.ogg",

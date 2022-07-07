@@ -121,6 +121,11 @@ function loadCompleted() {
     GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 10);
     GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 10);
     GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 10);
+    GAME.audioBuffers.spread("impactMetal_light_000.ogg", 20);
+    GAME.audioBuffers.spread("impactMetal_light_001.ogg", 20);
+    GAME.audioBuffers.spread("impactMetal_light_002.ogg", 20);
+    GAME.audioBuffers.spread("impactMetal_light_003.ogg", 20);
+    GAME.audioBuffers.spread("impactMetal_light_004.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_000.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_001.ogg", 20);
     GAME.audioBuffers.spread("impactTin_medium_002.ogg", 20);
@@ -289,21 +294,18 @@ document.addEventListener("mousedown", mousedown);
 document.addEventListener("mouseup", mouseup);
 // Also clear the interval when user leaves the window with mouse
 document.addEventListener("mouseout", mouseup);
-
 var mouseDownID = -1;  //Global ID of mouse down interval
 function mousedown(event) {
     if(mouseDownID == -1)  { //Prevent multimple loops!
         mouseDownID = setInterval(whileMouseDown, 1 /*execute every 1ms*/, event);
     }
 }
-
 function mouseup(event) {
     if(mouseDownID!=-1) {  //Only stop if exists
         clearInterval(mouseDownID);
         mouseDownID=-1;
     }
 }
-
 function whileMouseDown(event) {
     switch (GAME.state.phase) {
         case GAME.PHASES.INIT:

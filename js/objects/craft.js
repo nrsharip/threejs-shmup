@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
-const impacts = [
+const impacts_tin = [
     "impactTin_medium_000.ogg",
     "impactTin_medium_001.ogg",
     "impactTin_medium_002.ogg",
@@ -33,17 +33,12 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         
         if (!other || !other.userData) { console.log("ERROR: the object is unrecognizable: " + other); return; }
 
-        // craft with another craft
-        if (other.userData.filename.startsWith("craft_")) {
-        
-        }
-
         // craft with ammo
         if (other.userData.filename.startsWith("ammo_")) {
             if (!other.userData.gameplay.targetsHit.includes(this)) {
                 other.userData.gameplay.targetsHit.push(this);
 
-                GAME.sounds.play(impacts[Math.floor(Math.random() * impacts.length)]);
+                GAME.sounds.play(impacts_tin[Math.floor(Math.random() * impacts_tin.length)]);
 
                 let damage = other.userData.gameplay.damage;
 
@@ -51,13 +46,6 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
                 if (this !== other.userData.gameplay.releasedBy) {
                     this.userData.gameplay.health -= damage;
                     other.userData.gameplay.releasedBy.userData.gameplay.score += damage;
-                }
-
-                if (this.userData.gameplay.health <= 0) {
-                    GAME.sounds.play(explosions[Math.floor(Math.random() * explosions.length)]);
-
-                    this.userData.gameplay.destroyed = true;
-                    this.userData.releaseInstance();
                 }
             }
         }
@@ -68,6 +56,13 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
         // if a craft flies further than z = 50 - release to pool
         if (this.position.z > 50) {
+            this.userData.releaseInstance();
+        }
+
+        if (this.userData.gameplay.health <= 0) {
+            GAME.sounds.play(explosions[Math.floor(Math.random() * explosions.length)]);
+
+            this.userData.gameplay.destroyed = true;
             this.userData.releaseInstance();
         }
     }
@@ -94,6 +89,7 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         
         params.health = 100;
         params.destroyed = false;
+        params.damage = 10;
 
         return params;
     }

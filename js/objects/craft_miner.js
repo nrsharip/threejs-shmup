@@ -30,6 +30,8 @@ class CraftMiner extends AbstractCraft {
 
         params.health = 200;
 
+        params.damage = 30;
+
         return params;
     }
 }

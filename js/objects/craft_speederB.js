@@ -30,6 +30,8 @@ class CraftSpeederB extends AbstractCraft {
 
         params.health = 120;
 
+        params.damage = 20;
+
         return params;
     }
 }
