@@ -1,7 +1,5 @@
 import AbstractAmmo from './ammo.js'
-import * as PHYSICS from '../physics.js'
 import * as GAME from '../game.js'
-import * as UTILS from '../utils.js'
 
 class AmmoMachinegun extends AbstractAmmo {
     constructor(filename) { 
@@ -15,12 +13,6 @@ class AmmoMachinegun extends AbstractAmmo {
     }
 
     onCollision(other) {
-        // console.log(other);
-        // if (other && other.userData) {
-        //     if (other.userData?.name == "ground") {
-        //         PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(0, 200, 0));
-        //     }
-        // }
     }
 
     onUpdate(delta, elapsed) { 

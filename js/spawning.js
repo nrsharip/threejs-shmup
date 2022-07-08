@@ -13,7 +13,7 @@ export default class AsbtractSpawningObjectManager extends AsbtractGameObjectMan
     }
 
     update(delta, elapsed) {
-        if (this.spawn.enabled && (elapsed - this.spawn.lastTime > this.spawn.deltaMillis) ) {
+        if ( this.spawn.enabled && (this.spawn.lastTime == 0 || (elapsed - this.spawn.lastTime > this.spawn.deltaMillis)) ) {
             this.spawn.lastTime = elapsed;
 
             let position, rotation, linear, angular;

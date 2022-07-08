@@ -2,6 +2,8 @@
 
 import * as THREE from 'three';
 
+import * as YUKA from './lib/yuka/f7503a588747128eaa180fa9379b59419129164c/yuka.module.js';
+
 import * as RAYCASTER from './raycaster.js';
 import * as FILES from './files.js';
 import * as GAME from './game.js'
@@ -14,6 +16,7 @@ import * as UTILS from './utils.js'
 import WebGLCheck from './lib/WebGL.js';
 
 import ammo_machinegun from './objects/ammo_machinegun.js';
+import ammo_rocket from './objects/ammo_rocket.js';
 import craft_miner from './objects/craft_miner.js';
 import craft_speederA from './objects/craft_speederA.js';
 import craft_speederB from './objects/craft_speederB.js';
@@ -63,7 +66,7 @@ function init() {
     GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
     GAME.graphics.scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
     GAME.graphics.clock = new THREE.Clock();
-    //GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(camera, renderer, 0, -15, -40);
+    //GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(GAME.graphics.camera, GAME.graphics.renderer, 0, -15, -40);
 
     Ammo().then(function ( AmmoLib ) {
         Ammo = AmmoLib;
@@ -84,6 +87,9 @@ function init() {
         // PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
         // PHYSICS.addRigidBody(ground);
         GAME.graphics.scene.add(ground);
+
+        GAME.yuka.entityManager = new YUKA.EntityManager();
+        GAME.yuka.time = new YUKA.Time();
 
         GAME.state.phase = GAME.PHASES.LOAD_STARTED;
     })
@@ -117,6 +123,7 @@ function loadStarted() {
 
 function loadCompleted() {
     ammo_machinegun.createInstances(0.5, 1000);
+    ammo_rocket.createInstances(0.5, 1000);
     craft_miner.createInstances(1000, 50);
     craft_speederA.createInstances(1000, 50);
     craft_speederB.createInstances(1000, 50);
@@ -214,6 +221,9 @@ function render(timeElapsed) {
             break;
         case GAME.PHASES.GAME_STARTED:
         case GAME.PHASES.GAME_RESUMED:
+            const yukaDelta = GAME.yuka.time.update().getDelta();
+            GAME.yuka.entityManager.update( yukaDelta );
+
             PHYSICS.update(timeDelta);
 
             for (let manager of Object.values(GAME.managers)) {

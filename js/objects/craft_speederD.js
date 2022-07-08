@@ -1,5 +1,7 @@
 import AbstractCraft from './craft.js'
 
+import * as YUKA from '../lib/yuka/f7503a588747128eaa180fa9379b59419129164c/yuka.module.js';
+
 import * as PHYSICS from '../physics.js'
 import * as RAYCASTER from '../raycaster.js';
 import * as GAME from '../game.js'
@@ -13,6 +15,18 @@ const impacts_metal = [
     "impactMetal_light_004.ogg",
 ]
 
+const spawnAndHealth = function() {
+    GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
+    GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
+    GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
+    GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+
+    GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.1);
+    GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
+    GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
+    GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
+}
+
 class CraftSpeederD extends AbstractCraft {
     constructor(filename) { 
         super(filename); 
@@ -22,9 +36,11 @@ class CraftSpeederD extends AbstractCraft {
 
         this.score = 0;
         this.experience = 0;
-        // bullet releases
-        this.lastReleased = 0;
-        this.deltaMillis = 101;
+
+        this.weapons = {
+            machinegun: { released: 0, delta: 101 },
+            rocket: { released: 0, delta: 1000 },
+        }
     }
 
     update(delta, elapsed) {
@@ -76,7 +92,9 @@ class CraftSpeederD extends AbstractCraft {
         if (Math.floor(sc / 100) > xp) {
             this.userData.gameplay.experience = xp = Math.floor(sc / 100);
             // reducing the delta for bullet release (up to 1 millisecond - that's maximum)
-            if (this.userData.gameplay.deltaMillis > 1) { this.userData.gameplay.deltaMillis -= 0.5; }
+            if (this.userData.gameplay.weapons.machinegun.delta > 1) { 
+                this.userData.gameplay.weapons.machinegun.delta -= 0.5; 
+            }
 
             if (xp == 50) {
                 GAME.sounds.play("powerUp1.ogg");
@@ -104,33 +122,26 @@ class CraftSpeederD extends AbstractCraft {
                 GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 200) {
                 // adding single turret
-                let obj3d = GAME.managers.turret_single.acquireInstance();
-                obj3d.position.x = 0;        // measured in Blender
-                obj3d.position.y = 0.686095; // measured in Blender
-                obj3d.position.z = 0.411829; // measured in Blender
-                this.add(obj3d);
+                this.userData.turretSingle = GAME.managers.turret_single.acquireInstance();
+                this.userData.turretSingle.position.x = 0;        // measured in Blender
+                this.userData.turretSingle.position.y = 0.686095; // measured in Blender
+                this.userData.turretSingle.position.z = 0.411829; // measured in Blender
+                this.add(this.userData.turretSingle);
 
                 GAME.sounds.play("powerUp1.ogg");
-                GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
-                GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
-                GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
-                GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
-
-                GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.1);
-                GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
-                GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
-                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
+                spawnAndHealth();
             } else if (xp == 300) {
-                GAME.sounds.play("powerUp1.ogg");
-                GAME.managers.craft_miner.setSpawnDelta(GAME.managers.craft_miner.getSpawnDelta() / 1.5);
-                GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
-                GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
-                GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
+                // removing single turret
+                this.remove(this.userData.turretSingle);
+                // adding double turret
+                this.userData.turretDouble = GAME.managers.turret_double.acquireInstance();
+                this.userData.turretDouble.position.x = 0;        // measured in Blender
+                this.userData.turretDouble.position.y = 0.686095; // measured in Blender
+                this.userData.turretDouble.position.z = 0.411829; // measured in Blender
+                this.add(this.userData.turretDouble);
 
-                GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.1);
-                GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
-                GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
-                GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
+                GAME.sounds.play("powerUp1.ogg");
+                spawnAndHealth();
             }
         }
 
@@ -141,39 +152,88 @@ class CraftSpeederD extends AbstractCraft {
 
     onMouseDown(event) {
         let shoot = () => {
-            if (GAME.time.elapsed - this.userData.gameplay.lastReleased > this.userData.gameplay.deltaMillis) {
+            let weapons = this.userData.gameplay.weapons;
+            
+            this.userData.boundingBox.getSize(UTILS.tmpV3);
+            let x = this.position.x;
+            let y = this.position.y;
+            let z = this.position.z;
+            let dz = UTILS.tmpV3.z/2 + 1;
+
+            if (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta) {
                 GAME.sounds.play("122103__greatmganga__dshk-01.wav");
 
-                this.userData.boundingBox.getSize(UTILS.tmpV3);
-
-                let x = this.position.x;
-                let y = this.position.y;
-                let z = this.position.z - UTILS.tmpV3.z/2 - 1;
-
-                let makeBullet = (x, y, z, x1, y1, z1) => {
-                    UTILS.tmpV2.set(x, y, z);
+                let makeBullet = (px, py, pz, fx, fy, fz) => {
+                    UTILS.tmpV2.set(px, py, pz);
                     let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
                     obj3d.userData.gameplay.releasedBy = this;
-                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(x1, y1, z1));                         
+                    PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1.set(fx, fy, fz));
                 }
 
-                if (this.userData.gameplay.experience > 150) {
-                    makeBullet(x - 1.5, y, z, -200, 0, -1500, this);
-                    makeBullet(x - 0.75, y, z, -50, 0, -1500, this);
-                    makeBullet(x + 0.75, y, z, 50, 0, -1500, this);
-                    makeBullet(x + 1.5, y, z, 200, 0, -1500, this);
-                } else if (this.userData.gameplay.experience > 100) {
-                    makeBullet(x - 1, y, z, -200, 0, -1500, this);
-                    makeBullet(x, y, z, 0, 0, -1500, this);
-                    makeBullet(x + 1, y, z, 200, 0, -1500, this);
-                } else if (this.userData.gameplay.experience > 50) {
-                    makeBullet(x - 1, y, z, 0, 0, -1500, this);
-                    makeBullet(x + 1, y, z, 0, 0, -1500, this);
+                if (this.userData.gameplay.experience >= 150) {
+                    makeBullet(x - 1.5, y, z - dz, -200, 0, -1500);
+                    makeBullet(x - 0.75, y, z - dz, -50, 0, -1500);
+                    makeBullet(x + 0.75, y, z - dz, 50, 0, -1500);
+                    makeBullet(x + 1.5, y, z - dz, 200, 0, -1500);
+                } else if (this.userData.gameplay.experience >= 100) {
+                    makeBullet(x - 1, y, z - dz, -200, 0, -1500);
+                    makeBullet(x, y, z - dz, 0, 0, -1500);
+                    makeBullet(x + 1, y, z - dz, 200, 0, -1500);
+                } else if (this.userData.gameplay.experience >= 50) {
+                    makeBullet(x - 1, y, z - dz, 0, 0, -1500);
+                    makeBullet(x + 1, y, z - dz, 0, 0, -1500);
                 } else {
-                    makeBullet(x, y, z, 0, 0, -1500, this);
+                    makeBullet(x, y, z - dz, 0, 0, -1500);
                 }
 
-                this.userData.gameplay.lastReleased = GAME.time.elapsed;
+                this.userData.gameplay.weapons.machinegun.released = GAME.time.elapsed;
+            }
+
+            if (GAME.time.elapsed - weapons.rocket.released > weapons.rocket.delta) {
+                let makeRocket = (px, py, pz, vx, vy, vz) => {
+                    let obj3d = GAME.managers.ammo_rocket.addInstanceTo(GAME.graphics.scene);
+                    obj3d.userData.gameplay.releasedBy = this;
+
+                    // view-source:https://mugen87.github.io/yuka/examples/steering/seek/
+                    let vehicle = obj3d.userData.yuka.vehicle;
+
+                    // *** Vehicle ***
+                    // vehicle.mass = 1;
+                    // vehicle.maxForce = 100;
+                    // *** MovingEntity ***
+                    vehicle.velocity.set(vx, vy, vz);
+                    vehicle.maxSpeed = 100;
+                    // vehicle.updateOrientation = true;
+                    // *** GameEntity ***
+                    // vehicle.active = true;
+                    // vehicle.neighbors;
+                    // vehicle.neighborhoodRadius = 1;
+                    // vehicle.updateNeighborhood = false;
+                    vehicle.position.set(px, py, pz);
+                    // vehicle.rotation;
+                    // vehicle.scale;
+                    vehicle.forward.set(0,0,-1);
+                    // vehicle.up;
+                    // vehicle.boundingRadius = 0;
+                    vehicle.maxTurnRate = Math.PI / 8;
+                    // vehicle.canActivateTrigger = true;
+                    // vehicle.manager;
+
+                    let v = { 
+                        x: 80*Math.random() - 40, 
+                        y: 15,  
+                        z:-70*Math.random() + 10
+                    }
+
+                    const seekBehavior = new YUKA.SeekBehavior( v );
+                    vehicle.steering.add( seekBehavior );
+                }
+
+                if (this.userData.gameplay.experience >= 200) {
+                    makeRocket(x, y + 0.8, z + 0.411829 - 1, 0, 0, -40);
+                }
+
+                this.userData.gameplay.weapons.rocket.released = GAME.time.elapsed;
             }
         }
 
@@ -198,9 +258,18 @@ class CraftSpeederD extends AbstractCraft {
 
         params.score = this.score;
         params.experience = this.experience;
-        // bullet releases
-        params.lastReleased = this.lastReleased;
-        params.deltaMillis = this.deltaMillis;
+
+        if (params.weapons) {
+            params.weapons.machinegun.released = this.weapons.machinegun.released;
+            params.weapons.machinegun.delta = this.weapons.machinegun.delta;
+
+            params.weapons.rocket.released = this.weapons.rocket.released;
+            params.weapons.rocket.delta = this.weapons.rocket.delta;
+        } else {
+            // https://www.javascripttutorial.net/object/3-ways-to-copy-objects-in-javascript/
+            // deep copy
+            params.weapons = JSON.parse(JSON.stringify(this.weapons));
+        }
 
         return params;
     }
@@ -211,11 +280,7 @@ class CraftSpeederD extends AbstractCraft {
     setExperience(experience) { this.experience = experience; }
     getExperience() { return this.experience; }
 
-    setLastReleased(lastReleased) { this.lastReleased = lastReleased; }
-    getLastReleased() { return this.lastReleased; }
-
-    setDeltaMillis(deltaMillis) { this.deltaMillis = deltaMillis; }
-    getDeltaMillis() { return this.deltaMillis; }
+    getWeapons() { return this.weapons; }
 }
 
 const craft_speederD = new CraftSpeederD("craft_speederD.glb");

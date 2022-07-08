@@ -1,3 +1,5 @@
+import * as YUKA from './lib/yuka/f7503a588747128eaa180fa9379b59419129164c/yuka.module.js';
+
 import * as GAME from './game.js'
 import * as PHYSICS from './physics.js'
 import * as UTILS from './utils.js'
@@ -26,6 +28,15 @@ export default class AsbtractGameObjectManager {
 
             obj3d.userData.boundingBox.getSize(UTILS.tmpV1);
             PHYSICS.initObject(obj3d, mass, UTILS.tmpV1, 0.05);
+
+            let vehicle = new YUKA.Vehicle();
+            // GameEntity setters for private properties
+            vehicle.setRenderComponent( obj3d, sync );
+            function sync( entity, obj3d ) {
+                //console.log(entity.position);
+                PHYSICS.makeTranslationAndRotation(obj3d, entity.position, entity.rotation);
+            }
+            obj3d.userData.yuka = { vehicle: vehicle };
         }
     }
 
@@ -54,9 +65,9 @@ export default class AsbtractGameObjectManager {
         if (angVelocity) { UTILS.tmpV3.set(angVelocity.x, angVelocity.y, angVelocity.z); } else { UTILS.tmpV3.set(0, 0, 0); }
     
         // In case dynamics world is OFF
-        obj3d.position.x = position.x;
-        obj3d.position.y = position.y;
-        obj3d.position.z = position.z;
+        obj3d.position.x = UTILS.tmpV1.x;
+        obj3d.position.y = UTILS.tmpV1.y;
+        obj3d.position.z = UTILS.tmpV1.z;
     
         // In case dynamics world is ON
         PHYSICS.makeTranslationAndRotation(obj3d, UTILS.tmpV1, UTILS.tmpQuat1);
@@ -72,8 +83,10 @@ export default class AsbtractGameObjectManager {
 
     releaseInstance() {
         this.position.set(0,0,123);
+        // physics
         PHYSICS.makeTranslation(this, UTILS.tmpV3.set(0,0,123));
         PHYSICS.removeRigidBody(this);
+        // pool
         GAME.instances.releaseInstance(this); 
     }
 
