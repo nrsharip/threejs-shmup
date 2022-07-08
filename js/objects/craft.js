@@ -40,7 +40,9 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         if (!other || !other.userData) { console.log("ERROR: the object is unrecognizable: " + other); return; }
 
         // craft with ammo
-        if (other.userData.filename.startsWith("ammo_")) {
+        if (other.userData.filename.startsWith("ammo_rocket")) {
+            // rockets handled separately
+        } else if (other.userData.filename.startsWith("ammo_")) {
             if (!other.userData.gameplay.targetsHit.includes(this)) {
                 other.userData.gameplay.targetsHit.push(this);
 

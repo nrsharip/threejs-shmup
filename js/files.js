@@ -52,12 +52,32 @@ export const sounds = {
     prefix: "assets/audio/",
     filenames: [
         "122103__greatmganga__dshk-01.wav", // https://freesound.org/people/greatmganga/sounds/122103/
+    ]
+}
+
+export const explosion = {
+    prefix: "assets/audio/explosion/",
+    filenames: [
         "587186__derplayer__explosion-00.wav", // https://freesound.org/people/derplayer/sounds/587186/
         "587185__derplayer__explosion-01.wav", // https://freesound.org/people/derplayer/sounds/587185/
         "587184__derplayer__explosion-02.wav", // https://freesound.org/people/derplayer/sounds/587184/
         "587183__derplayer__explosion-03.wav", // https://freesound.org/people/derplayer/sounds/587183/
         "587190__derplayer__explosion-04.wav", // https://freesound.org/people/derplayer/sounds/587190/
         "587189__derplayer__explosion-05.wav", // https://freesound.org/people/derplayer/sounds/587190/
+    ]
+}
+
+export const rocket = {
+    prefix: "assets/audio/rocket/",
+    filenames: [
+        "755__elmomo__missile01.mp3", // https://freesound.org/people/elmomo/sounds/755/
+        "756__elmomo__missile02.mp3", // https://freesound.org/people/elmomo/sounds/756/
+        "51468__smcameron__missile-launch-2.wav", // https://freesound.org/people/smcameron/sounds/51468/
+        "186931__readeonly__rocket-whistle2.wav", // https://freesound.org/people/ReadeOnly/sounds/186931/
+        "51469__smcameron__rocket-exhaust-1.wav", // https://freesound.org/people/smcameron/sounds/51469/
+        "273332__robinhood76__05780-space-missile.wav", // https://freesound.org/people/Robinhood76/sounds/273332/
+        "334269__projectsu012__launching-2.wav", // https://freesound.org/people/ProjectsU012/sounds/334269/
+        "580751__marklaukkanen__fireworks-whistle-whine.wav", // https://freesound.org/people/marklaukkanen/sounds/580751/
     ]
 }
 

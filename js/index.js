@@ -109,7 +109,7 @@ function loadStarted() {
         }
     })());
     // Loading Sounds
-    groups = [ FILES.sounds, FILES.impact, FILES.digital ];
+    groups = [ FILES.sounds, FILES.explosion, FILES.rocket, FILES.impact, FILES.digital ];
     SOUNDS.queueFileNames(groups, (function() { 
         let loaded = 0;
         let total = groups.reduce((prev, curr) => prev + curr.filenames.length, 0);
@@ -149,12 +149,14 @@ function loadCompleted() {
 
 function spreadSounds() {
     GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 100);
-    GAME.audioBuffers.spread("587186__derplayer__explosion-00.wav", 10);
-    GAME.audioBuffers.spread("587185__derplayer__explosion-01.wav", 10);
-    GAME.audioBuffers.spread("587184__derplayer__explosion-02.wav", 10);
-    GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 10);
-    GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 10);
-    GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 10);
+    GAME.audioBuffers.spread("334269__projectsu012__launching-2.wav", 100);
+    GAME.audioBuffers.spread("580751__marklaukkanen__fireworks-whistle-whine.wav", 100);
+    GAME.audioBuffers.spread("587186__derplayer__explosion-00.wav", 5);
+    GAME.audioBuffers.spread("587185__derplayer__explosion-01.wav", 5);
+    GAME.audioBuffers.spread("587184__derplayer__explosion-02.wav", 5);
+    GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 5);
+    GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 5);
+    GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 5);
     GAME.audioBuffers.spread("powerUp1.ogg", 10);
     GAME.audioBuffers.spread("impactMetal_light_000.ogg", 20);
     GAME.audioBuffers.spread("impactMetal_light_001.ogg", 20);

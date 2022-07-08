@@ -1,5 +1,7 @@
 import AbstractCraft from './craft.js'
 
+import * as THREE from 'three';
+
 import * as YUKA from '../lib/yuka/f7503a588747128eaa180fa9379b59419129164c/yuka.module.js';
 
 import * as PHYSICS from '../physics.js'
@@ -21,10 +23,10 @@ const spawnAndHealth = function() {
     GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
     GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
 
-    GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.1);
-    GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.1);
-    GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
-    GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
+    GAME.managers.craft_miner.setHealth(GAME.managers.craft_miner.getHealth() * 1.5);
+    GAME.managers.craft_speederA.setHealth(GAME.managers.craft_speederA.getHealth() * 1.5);
+    GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.5);
+    GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.5);
 }
 
 class CraftSpeederD extends AbstractCraft {
@@ -94,6 +96,8 @@ class CraftSpeederD extends AbstractCraft {
             // reducing the delta for bullet release (up to 1 millisecond - that's maximum)
             if (this.userData.gameplay.weapons.machinegun.delta > 1) { 
                 this.userData.gameplay.weapons.machinegun.delta -= 0.5; 
+            } else if (this.userData.gameplay.weapons.rocket.delta > 301) { 
+                this.userData.gameplay.weapons.rocket.delta -= 2; 
             }
 
             if (xp == 50) {
@@ -191,6 +195,8 @@ class CraftSpeederD extends AbstractCraft {
 
             if (GAME.time.elapsed - weapons.rocket.released > weapons.rocket.delta) {
                 let makeRocket = (px, py, pz, vx, vy, vz) => {
+                    GAME.sounds.play("334269__projectsu012__launching-2.wav");
+
                     let obj3d = GAME.managers.ammo_rocket.addInstanceTo(GAME.graphics.scene);
                     obj3d.userData.gameplay.releasedBy = this;
 
@@ -219,17 +225,22 @@ class CraftSpeederD extends AbstractCraft {
                     // vehicle.canActivateTrigger = true;
                     // vehicle.manager;
 
-                    let v = { 
-                        x: 80*Math.random() - 40, 
-                        y: 15,  
-                        z:-70*Math.random() + 10
-                    }
+                    let v = new THREE.Vector3(
+                        80*Math.random() - 40,
+                        15,
+                        -70*Math.random() + 10,
+                    );
+
+                    obj3d.userData.gameplay.intermediate = v;
 
                     const seekBehavior = new YUKA.SeekBehavior( v );
                     vehicle.steering.add( seekBehavior );
                 }
 
-                if (this.userData.gameplay.experience >= 200) {
+                if (this.userData.gameplay.experience >= 300) {
+                    makeRocket(x - 0.5, y + 0.8, z + 0.411829 - 1, 0, 0, -40);
+                    makeRocket(x + 0.5, y + 0.8, z + 0.411829 - 1, 0, 0, -40);
+                } else if (this.userData.gameplay.experience >= 200) {
                     makeRocket(x, y + 0.8, z + 0.411829 - 1, 0, 0, -40);
                 }
 
