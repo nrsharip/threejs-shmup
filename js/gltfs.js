@@ -18,6 +18,8 @@ function onGLTFLoad(filename, group, onFileload) {
     return function ( gltf ) {
         loaded[filename] = gltf;
 
+        console.log(filename, gltf);
+
         if (gltf && gltf.scene && gltf.scene instanceof THREE.Object3D) {
             gltf.scene["userData"].filename = filename;
             gltf.scene.traverse(function(object) {
