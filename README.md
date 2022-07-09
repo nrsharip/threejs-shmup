@@ -10,15 +10,12 @@ This is a classical [Shoot 'em up](https://en.wikipedia.org/wiki/Shoot_%27em_up)
 
 ## Screenshots
 
+<img src="docs/run.gif?raw=true" width="100%">
+
 <table>
-  <tr colspan = 2>
-    <td><img src="docs/run.gif?raw=true" width="100%"></td>
-  </tr>
   <tr>
     <td><img src="docs/screenshot1.png?raw=true" width="100%"></td>
     <td><img src="docs/screenshot2.png?raw=true" width="100%"></td>
-  </tr>
-  <tr>
     <td><img src="docs/screenshot3.png?raw=true" width="100%"></td>
     <td><img src="docs/screenshot4.png?raw=true" width="100%"></td>
   </tr>
@@ -58,3 +55,7 @@ This is a classical [Shoot 'em up](https://en.wikipedia.org/wiki/Shoot_%27em_up)
 ### Object Pooling
 
 <img src="docs/pooling.png?raw=true" width="100%">
+
+## License
+
+This project is available under the [MIT license](LICENSE) © Nail Sharipov
