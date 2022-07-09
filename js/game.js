@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import * as MESH from './mesh.js'
 
 const graphics = {
-    renderer: {},
-    camera: {},
-    scene: {},
-    clock: {},
-    orbitControls: {},
+    renderer: undefined,
+    camera: undefined,
+    scene: undefined,
+    clock: undefined,
+    orbitControls: undefined,
 }
 
 const PHASES = {
@@ -139,9 +139,21 @@ const managers = {
     }
 };
 
+const view = {
+    far: { line: undefined, center: undefined },
+    near: { line: undefined, center: undefined },
+
+    init(nz, fz) {
+        this.far.line = new THREE.Line3(new THREE.Vector3(-1000, 0, fz), new THREE.Vector3(1000, 0, fz));
+        this.far.center = this.far.line.getCenter(new THREE.Vector3());
+        this.near.line = new THREE.Line3(new THREE.Vector3(-1000, 0, nz), new THREE.Vector3(1000, 0, nz));
+        this.near.center = this.far.line.getCenter(new THREE.Vector3());
+    }
+}
+
 const player = {};
 const time = { delta: 0, elapsed: 0 };
 
 const yuka = {}
 
-export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, player, time, yuka }
+export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, view, player, time, yuka }

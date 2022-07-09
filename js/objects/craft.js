@@ -21,9 +21,6 @@ const explosions = [
     "587189__derplayer__explosion-05.wav", // https://freesound.org/people/derplayer/sounds/587190/
 ]
 
-const horizon = new THREE.Line3(new THREE.Vector3(-1000, 0, -100), new THREE.Vector3(1000, 0, -100));
-const center = horizon.getCenter(new THREE.Vector3());
-
 export default class AbstractCraft extends AsbtractSpawningObjectManager {
     constructor(filename) { 
         super(filename); 
@@ -86,12 +83,12 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
     spawnParameters() {
         let frustum = GAME.graphics.camera.frustum;
-        frustum.planes[0].intersectLine(horizon, UTILS.tmpV1); // left side
-        frustum.planes[1].intersectLine(horizon, UTILS.tmpV2); // right side
+        frustum.planes[0].intersectLine(GAME.view.far.line, UTILS.tmpV1); // left side
+        frustum.planes[1].intersectLine(GAME.view.far.line, UTILS.tmpV2); // right side
 
         let tmp1 = new THREE.Object3D();
         // position
-        tmp1.position.set(2 * UTILS.tmpV2.x * Math.random() - UTILS.tmpV2.x, 0, center.z);
+        tmp1.position.set(2 * UTILS.tmpV2.x * Math.random() - UTILS.tmpV2.x, 0, GAME.view.far.center.z);
         // rotation
         tmp1.lookAt(GAME.player.obj3d.position);
         // linear velocity

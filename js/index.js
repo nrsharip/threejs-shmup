@@ -61,6 +61,7 @@ GAME.state.phase = GAME.PHASES.INIT;
 
 let ground = undefined;
 function init() {
+    GAME.view.init(20, -100);
     // GRAPHICS INIT
     GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
     GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
