@@ -225,11 +225,14 @@ class CraftSpeederD extends AbstractCraft {
                     // vehicle.canActivateTrigger = true;
                     // vehicle.manager;
 
-                    let v = new THREE.Vector3(
-                        80*Math.random() - 40,
-                        15,
-                        -70*Math.random() + 10,
-                    );
+                    let frustum = GAME.graphics.camera.frustum;
+                    frustum.planes[1].intersectLine(GAME.view.near.line, UTILS.tmpV2); // near line X right side
+
+                    let ranx = 2 * UTILS.tmpV2.x * Math.random() - UTILS.tmpV2.x;
+                    let ranz = GAME.view.far.center.z - GAME.view.near.center.z;
+                    ranz = ranz * Math.random() + GAME.view.near.center.z;
+                    
+                    let v = new THREE.Vector3( ranx, 15, ranz * 0.75 );
 
                     obj3d.userData.gameplay.intermediate = v;
 

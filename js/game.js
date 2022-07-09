@@ -147,7 +147,7 @@ const view = {
         this.far.line = new THREE.Line3(new THREE.Vector3(-1000, 0, fz), new THREE.Vector3(1000, 0, fz));
         this.far.center = this.far.line.getCenter(new THREE.Vector3());
         this.near.line = new THREE.Line3(new THREE.Vector3(-1000, 0, nz), new THREE.Vector3(1000, 0, nz));
-        this.near.center = this.far.line.getCenter(new THREE.Vector3());
+        this.near.center = this.near.line.getCenter(new THREE.Vector3());
     }
 }
 
