@@ -84,22 +84,22 @@ export const rocket = {
 export const impact = {
     prefix: "assets/audio/kenney_impactsounds/Audio/",
     filenames: [
-        "impactMetal_light_000.ogg", // https://kenney.nl/assets/impact-sounds
-        "impactMetal_light_001.ogg",
-        "impactMetal_light_002.ogg",
-        "impactMetal_light_003.ogg",
-        "impactMetal_light_004.ogg",
-        "impactTin_medium_000.ogg",
-        "impactTin_medium_001.ogg",
-        "impactTin_medium_002.ogg",
-        "impactTin_medium_003.ogg",
-        "impactTin_medium_004.ogg",
+        "impactMetal_light_000.wav", // https://kenney.nl/assets/impact-sounds
+        "impactMetal_light_001.wav",
+        "impactMetal_light_002.wav",
+        "impactMetal_light_003.wav",
+        "impactMetal_light_004.wav",
+        "impactTin_medium_000.wav",
+        "impactTin_medium_001.wav",
+        "impactTin_medium_002.wav",
+        "impactTin_medium_003.wav",
+        "impactTin_medium_004.wav",
     ]
 }
 
 export const digital = {
     prefix: "assets/audio/kenney_digitalaudio/Audio/",
     filenames: [
-        "powerUp1.ogg", // https://kenney.nl/assets/digital-audio
+        "powerUp1.wav", // https://kenney.nl/assets/digital-audio
     ]
 }

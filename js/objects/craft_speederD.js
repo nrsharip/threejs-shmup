@@ -10,11 +10,11 @@ import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
 const impacts_metal = [
-    "impactMetal_light_000.ogg",
-    "impactMetal_light_001.ogg",
-    "impactMetal_light_002.ogg",
-    "impactMetal_light_003.ogg",
-    "impactMetal_light_004.ogg",
+    "impactMetal_light_000.wav",
+    "impactMetal_light_001.wav",
+    "impactMetal_light_002.wav",
+    "impactMetal_light_003.wav",
+    "impactMetal_light_004.wav",
 ]
 
 const spawnAndHealth = function() {
@@ -101,13 +101,13 @@ class CraftSpeederD extends AbstractCraft {
             }
 
             if (xp == 50) {
-                GAME.sounds.play("powerUp1.ogg");
+                GAME.sounds.play("powerUp1.wav");
                 GAME.managers.craft_speederB.setSpawnEnabled(true);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
 
                 GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 100) {
-                GAME.sounds.play("powerUp1.ogg");
+                GAME.sounds.play("powerUp1.wav");
                 GAME.managers.craft_speederA.setSpawnEnabled(true);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederC.setSpawnDelta(GAME.managers.craft_speederC.getSpawnDelta() / 1.5);
@@ -115,7 +115,7 @@ class CraftSpeederD extends AbstractCraft {
                 GAME.managers.craft_speederB.setHealth(GAME.managers.craft_speederB.getHealth() * 1.1);
                 GAME.managers.craft_speederC.setHealth(GAME.managers.craft_speederC.getHealth() * 1.1);
             } else if (xp == 150) {
-                GAME.sounds.play("powerUp1.ogg");
+                GAME.sounds.play("powerUp1.wav");
                 GAME.managers.craft_miner.setSpawnEnabled(true);
                 GAME.managers.craft_speederA.setSpawnDelta(GAME.managers.craft_speederA.getSpawnDelta() / 1.5);
                 GAME.managers.craft_speederB.setSpawnDelta(GAME.managers.craft_speederB.getSpawnDelta() / 1.5);
@@ -132,7 +132,7 @@ class CraftSpeederD extends AbstractCraft {
                 this.userData.turretSingle.position.z = 0.411829; // measured in Blender
                 this.add(this.userData.turretSingle);
 
-                GAME.sounds.play("powerUp1.ogg");
+                GAME.sounds.play("powerUp1.wav");
                 spawnAndHealth();
             } else if (xp == 300) {
                 // removing single turret
@@ -144,7 +144,7 @@ class CraftSpeederD extends AbstractCraft {
                 this.userData.turretDouble.position.z = 0.411829; // measured in Blender
                 this.add(this.userData.turretDouble);
 
-                GAME.sounds.play("powerUp1.ogg");
+                GAME.sounds.play("powerUp1.wav");
                 spawnAndHealth();
             }
         }

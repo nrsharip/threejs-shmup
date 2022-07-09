@@ -5,11 +5,11 @@ import * as GAME from '../game.js'
 import * as UTILS from '../utils.js'
 
 const impacts_tin = [
-    "impactTin_medium_000.ogg",
-    "impactTin_medium_001.ogg",
-    "impactTin_medium_002.ogg",
-    "impactTin_medium_003.ogg",
-    "impactTin_medium_004.ogg",
+    "impactTin_medium_000.wav",
+    "impactTin_medium_001.wav",
+    "impactTin_medium_002.wav",
+    "impactTin_medium_003.wav",
+    "impactTin_medium_004.wav",
 ]
 
 const explosions = [
