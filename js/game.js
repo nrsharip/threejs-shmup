@@ -43,15 +43,11 @@ const instances = {
     // https://en.wikipedia.org/wiki/Object_pool_pattern
 
     acquireInstance(filename) {
-        if(this[filename].available.length > 0) {
+        if (this[filename].available.length > 0) {
             let obj3d = this[filename].available.pop();
             this[filename].inuse.push(obj3d);
             return obj3d;
         } 
-        // else {
-        //     models.createInstance(filename);
-        //     return this.acquireInstance(filename);
-        // }
         return undefined;
     },
 

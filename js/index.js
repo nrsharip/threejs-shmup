@@ -73,8 +73,12 @@ function init() {
     Ammo().then(function ( AmmoLib ) {
         Ammo = AmmoLib;
 
+        // Physics Init
         PHYSICS.init();
         PHYSICS.dynamicsWorld.setGravity( new Ammo.btVector3( 0, 0, 0 ) );
+        // YUKA init - AI Game Library
+        GAME.yuka.entityManager = new YUKA.EntityManager();
+        GAME.yuka.time = new YUKA.Time();
 
         // SCENE OBJECTS
         const dirLight = GRAPHICS.setupDirLight();
@@ -89,9 +93,6 @@ function init() {
         // PHYSICS.initObject(ground, 0, UTILS.tmpV1.set(w, h, d), 0.05);
         // PHYSICS.addRigidBody(ground);
         GAME.graphics.scene.add(ground);
-
-        GAME.yuka.entityManager = new YUKA.EntityManager();
-        GAME.yuka.time = new YUKA.Time();
 
         GAME.state.phase = GAME.PHASES.LOAD_STARTED;
     })
