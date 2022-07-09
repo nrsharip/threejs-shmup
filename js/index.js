@@ -102,6 +102,7 @@ function loadStarted() {
     let processes = 2;
     // Loading GLTFs
     let groups = [ FILES.craft, FILES.ammo ];
+    console.log("loadStarted");
     GLTFS.queueFileNames(groups, (function() {
         let loaded = 0;
         let total = groups.reduce((prev, curr) => prev + curr.filenames.length, 0);
