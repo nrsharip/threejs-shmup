@@ -21,6 +21,9 @@ const explosions = [
     "587189__derplayer__explosion-05.wav", // https://freesound.org/people/derplayer/sounds/587190/
 ]
 
+const horizon = new THREE.Line3(new THREE.Vector3(-1000, 0, -100), new THREE.Vector3(1000, 0, -100));
+const center = horizon.getCenter(new THREE.Vector3());
+
 export default class AbstractCraft extends AsbtractSpawningObjectManager {
     constructor(filename) { 
         super(filename); 
@@ -82,11 +85,19 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
     }
 
     spawnParameters() {
+        let frustum = GAME.graphics.camera.frustum;
+        frustum.planes[0].intersectLine(horizon, UTILS.tmpV1); // left side
+        frustum.planes[1].intersectLine(horizon, UTILS.tmpV2); // right side
+
         let tmp1 = new THREE.Object3D();
-        tmp1.position.set(200 * Math.random() - 100, 0, -100);      // position
-        tmp1.lookAt(GAME.player.obj3d.position);                    // rotation
-        UTILS.tmpV1.set(0, 0, 10).applyQuaternion(tmp1.quaternion); // linear velocity
-        UTILS.tmpV2.set(0, 0, 0);                                   // angular velocity
+        // position
+        tmp1.position.set(2 * UTILS.tmpV2.x * Math.random() - UTILS.tmpV2.x, 0, center.z);
+        // rotation
+        tmp1.lookAt(GAME.player.obj3d.position);
+        // linear velocity
+        UTILS.tmpV1.set(0, 0, 10).applyQuaternion(tmp1.quaternion);
+        // angular velocity
+        UTILS.tmpV2.set(0, 0, 0);
 
         tmp1.quaternion.multiply(UTILS.quatDegrees180); // turning 180 degrees so the models face towards the player
         return [tmp1.position, tmp1.quaternion, UTILS.tmpV1.clone(), UTILS.tmpV2.clone()];

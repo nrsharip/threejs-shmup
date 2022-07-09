@@ -64,6 +64,7 @@ function init() {
     // GRAPHICS INIT
     GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
     GAME.graphics.camera = GRAPHICS.setupPerspectiveCamera('#mainCanvas', UTILS.tmpV1.set(0, 30, 20), UTILS.tmpV2.set(0, -15, -40));
+    GAME.graphics.camera.frustum = UTILS.getCameraFrustum(GAME.graphics.camera);
     GAME.graphics.scene = GRAPHICS.setupScene('#96b0bc'); // https://encycolorpedia.com/96b0bc
     GAME.graphics.clock = new THREE.Clock();
     //GAME.graphics.orbitControls = GRAPHICS.setupOrbitControls(GAME.graphics.camera, GAME.graphics.renderer, 0, -15, -40);
@@ -179,12 +180,16 @@ function gameStarted() {
     ground.material.visible = false;
             
     // Non-player characters
+    craft_miner.setHealth(200);
     craft_miner.setSpawnDelta(1600);
     craft_miner.setSpawnEnabled(false);
+    craft_speederA.setHealth(160);
     craft_speederA.setSpawnDelta(1200);
     craft_speederA.setSpawnEnabled(false);
+    craft_speederB.setHealth(120);
     craft_speederB.setSpawnDelta(800);
     craft_speederB.setSpawnEnabled(false);
+    craft_speederC.setHealth(80);
     craft_speederC.setSpawnDelta(400);
     craft_speederC.setSpawnEnabled(true);
 
@@ -250,6 +255,7 @@ function render(timeElapsed) {
         const canvas = GAME.graphics.renderer.domElement;
         GAME.graphics.camera.aspect = canvas.clientWidth / canvas.clientHeight;
         GAME.graphics.camera.updateProjectionMatrix();
+        UTILS.getCameraFrustum(GAME.graphics.camera, GAME.graphics.camera.frustum);
     }
 
     GAME.graphics.renderer.render( GAME.graphics.scene, GAME.graphics.camera );

@@ -1,15 +1,17 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.142.0/examples/jsm/controls/OrbitControls.js';
 
+import * as UTILS from './utils.js'
+
 function setupRenderer(selector) {
     // see https://github.com/mrdoob/three.js/blob/dev/examples/physics_ammo_instancing.html
     // see https://threejs.org/docs/api/en/renderers/WebGLRenderer.html
     const canvas = document.querySelector(selector);
-    const renderer = new THREE.WebGLRenderer({canvas});
+    const renderer = new THREE.WebGLRenderer({ canvas });
     // see also: https://usefulangle.com/post/12/javascript-going-fullscreen-is-rare
-    // see https://threejs.org/manual/#en/responsive
-    // renderer.setPixelRatio( window.devicePixelRatio ); // This is strongly NOT RECOMMENDED
-    renderer.setSize( canvas.clientWidth, canvas.clientHeight, false );
+
+    UTILS.resizeRendererToDisplaySize(renderer);
+
     // see https://threejs.org/manual/#en/shadows
     renderer.shadowMap.enabled = true;
     console.log("Max Texture Size: " + renderer.capabilities.maxTextureSize);
