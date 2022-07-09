@@ -15,7 +15,6 @@ This is a classical [Shoot 'em up](https://en.wikipedia.org/wiki/Shoot_%27em_up)
 <table>
   <tr>
     <td><img src="docs/screenshot1.png?raw=true" width="100%"></td>
-    <td><img src="docs/screenshot2.png?raw=true" width="100%"></td>
     <td><img src="docs/screenshot3.png?raw=true" width="100%"></td>
     <td><img src="docs/screenshot4.png?raw=true" width="100%"></td>
   </tr>
