@@ -101,7 +101,13 @@ const models = {
 const audioListener = new THREE.AudioListener();
 const sounds = {
     play(filename) {
-        sounds[filename].array[sounds[filename].count++ % sounds[filename].array.length].play()
+        // see also: https://stackoverflow.com/questions/35323062/detect-sound-is-ended-in-three-positionalaudio
+        for (let sound of sounds[filename].array) {
+            if (!sound.isPlaying) { 
+                sound.play(); 
+                break; 
+            }
+        }
     }
 }
 

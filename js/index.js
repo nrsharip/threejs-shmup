@@ -148,26 +148,26 @@ function loadCompleted() {
 }
 
 function spreadSounds() {
-    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 100);
-    GAME.audioBuffers.spread("334269__projectsu012__launching-2.wav", 100);
-    GAME.audioBuffers.spread("580751__marklaukkanen__fireworks-whistle-whine.wav", 100);
-    GAME.audioBuffers.spread("587186__derplayer__explosion-00.wav", 5);
-    GAME.audioBuffers.spread("587185__derplayer__explosion-01.wav", 5);
-    GAME.audioBuffers.spread("587184__derplayer__explosion-02.wav", 5);
-    GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 5);
-    GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 5);
-    GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 5);
-    GAME.audioBuffers.spread("powerUp1.ogg", 10);
-    GAME.audioBuffers.spread("impactMetal_light_000.ogg", 20);
-    GAME.audioBuffers.spread("impactMetal_light_001.ogg", 20);
-    GAME.audioBuffers.spread("impactMetal_light_002.ogg", 20);
-    GAME.audioBuffers.spread("impactMetal_light_003.ogg", 20);
-    GAME.audioBuffers.spread("impactMetal_light_004.ogg", 20);
-    GAME.audioBuffers.spread("impactTin_medium_000.ogg", 20);
-    GAME.audioBuffers.spread("impactTin_medium_001.ogg", 20);
-    GAME.audioBuffers.spread("impactTin_medium_002.ogg", 20);
-    GAME.audioBuffers.spread("impactTin_medium_003.ogg", 20);
-    GAME.audioBuffers.spread("impactTin_medium_004.ogg", 20);
+    GAME.audioBuffers.spread("122103__greatmganga__dshk-01.wav", 15);
+    GAME.audioBuffers.spread("334269__projectsu012__launching-2.wav", 15);
+    GAME.audioBuffers.spread("580751__marklaukkanen__fireworks-whistle-whine.wav", 15);
+    GAME.audioBuffers.spread("587186__derplayer__explosion-00.wav", 4);
+    GAME.audioBuffers.spread("587185__derplayer__explosion-01.wav", 4);
+    GAME.audioBuffers.spread("587184__derplayer__explosion-02.wav", 4);
+    GAME.audioBuffers.spread("587183__derplayer__explosion-03.wav", 4);
+    GAME.audioBuffers.spread("587190__derplayer__explosion-04.wav", 4);
+    GAME.audioBuffers.spread("587189__derplayer__explosion-05.wav", 4);
+    GAME.audioBuffers.spread("powerUp1.ogg", 1);
+    GAME.audioBuffers.spread("impactMetal_light_000.ogg", 4);
+    GAME.audioBuffers.spread("impactMetal_light_001.ogg", 4);
+    GAME.audioBuffers.spread("impactMetal_light_002.ogg", 4);
+    GAME.audioBuffers.spread("impactMetal_light_003.ogg", 4);
+    GAME.audioBuffers.spread("impactMetal_light_004.ogg", 4);
+    GAME.audioBuffers.spread("impactTin_medium_000.ogg", 4);
+    GAME.audioBuffers.spread("impactTin_medium_001.ogg", 4);
+    GAME.audioBuffers.spread("impactTin_medium_002.ogg", 4);
+    GAME.audioBuffers.spread("impactTin_medium_003.ogg", 4);
+    GAME.audioBuffers.spread("impactTin_medium_004.ogg", 4);
 }
 
 function gameStarted() {
