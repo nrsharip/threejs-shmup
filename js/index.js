@@ -266,8 +266,8 @@ function render(timeElapsed) {
 function initEvents() {
     document.getElementById("startButton").addEventListener("click", onClickStartButton, false);
     document.getElementById("resumeButton").addEventListener("click", onClickResumeButton, false);
-    document.getElementById("menuMobileButton").addEventListener("click", onClickMenuMobileButton, false);
-    
+    document.getElementById("menuMobileButton").addEventListener("touchstart", onClickMenuMobileButton, false);
+
     document.addEventListener("keydown", onKeyDown);
     
     // https://threejs.org/docs/#api/en/core/Raycaster
@@ -287,6 +287,8 @@ function initEvents() {
 
 function onClickStartButton() {
     document.getElementById("mainMenu").style.display = "none";
+
+    UTILS.unlockIphoneSounds(GAME.audioListener);
 
     GAME.state.phase = GAME.PHASES.GAME_STARTED;
 }

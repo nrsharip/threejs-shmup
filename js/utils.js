@@ -62,6 +62,42 @@ function getCameraFrustum(camera, frustum) {
     return frustum;
 }
 
+// https://github.com/mrdoob/three.js/issues/10404
+// https://paulbakaus.com/tutorials/html5/web-audio-on-ios/
+function unlockIphoneSounds(listener) {
+    // create empty buffer
+    let buffer = listener.context.createBuffer(1, 1, 22050);
+    let source = listener.context.createBufferSource();
+    source.buffer = buffer;
+
+    console.log(listener);
+    console.log(buffer);
+    console.log(source);
+
+    // connect to output (your speakers)
+    source.connect(listener.context.destination);
+
+    // by checking the play state after some time, we know if we're really unlocked
+    // DEPRECATED:
+    // setTimeout(function() {
+    //     if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+    //         isUnlocked = true;
+    //     }
+    // }, 0);
+    // 
+    // see https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Migrating_from_webkitAudioContext
+    // If you need to know when playback of the node is finished (which is the most significant use case 
+    // of playbackState), there is a new ended event which you can use to know when playback is finished.
+    function endedHandler(event) { console.log("Audio Unlocked!"); }
+    source.onended = endedHandler;
+
+    // play the file
+    // DEPRECATED:
+    // source.noteOn(0); 
+    // see https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Migrating_from_webkitAudioContext
+    source.start();
+}
+
 // Ported from:
 // https://github.com/nrsharip/hammergenics/blob/ecf9b7bb1c7037e3705000a586dca0559928e512/core/src/com/hammergenics/HGUtils.java#L1004
 function spiralGetNext(inOut) {
@@ -88,6 +124,7 @@ const quatDegrees180 = tmp2.quaternion;
 export { 
     resizeRendererToDisplaySize,
     getCameraFrustum,
+    unlockIphoneSounds,
     spiralGetNext, 
     tmpM1, tmpM2, tmpM3,
     tmpEuler1, tmpEuler2, tmpEuler3,
