@@ -413,7 +413,7 @@ function ongoingTouchIndexById(idToFind) {
     return -1;
 }
 function onTouchStart(event) {
-    //event.preventDefault();
+    event.preventDefault();
     //console.log('touchstart.');
     const touches = event.changedTouches;
   
@@ -430,7 +430,7 @@ function onTouchStart(event) {
     }
 }
 function onTouchMove(event) {
-    //event.preventDefault();
+    event.preventDefault();
     const touches = event.changedTouches;
   
     for (let i = 0; i < touches.length; i++) {
@@ -450,7 +450,7 @@ function onTouchMove(event) {
     }
 }
 function onTouchEnd(event) {
-    //event.preventDefault();
+    event.preventDefault();
     //console.log("touchend");
     const touches = event.changedTouches;
   
@@ -475,7 +475,7 @@ function onTouchEnd(event) {
     }
 }
 function onTouchCancel(event) {
-    //event.preventDefault();
+    event.preventDefault();
     //console.log('touchcancel.');
     const touches = event.changedTouches;
   
