@@ -15,6 +15,12 @@
 				/* https://stackoverflow.com/questions/47344626/put-a-table-in-a-canvas-in-html */
 				position: absolute;
 				z-index: 0;
+
+				/* https://stackoverflow.com/questions/7768269/ipad-safari-disable-scrolling-and-bounce-effect */
+				/* https://web.archive.org/web/20151103001838/http://www.luster.io/blog/9-29-14-mobile-web-checklist.html */
+				/* Make things that shouldn't be selectable unselectable */
+				user-select: none;
+				-webkit-touch-callout: none;
 			}
 			#info {
 				position: absolute;
