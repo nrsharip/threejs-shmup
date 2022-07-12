@@ -3,6 +3,7 @@ import AsbtractSpawningObjectManager from '../spawning.js'
 import * as THREE from 'three';
 import * as GAME from '../game.js'
 import * as PHYSICS from '../physics.js'
+import * as RAYCASTER from '../raycaster.js';
 import * as UTILS from '../utils.js'
 
 const impacts_tin = [
@@ -87,26 +88,51 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
         let weapons = this.userData.gameplay.weapons;
         if ((this !== GAME.player.obj3d) && (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta)) {
-            GAME.sounds.play("122103__greatmganga__dshk-01.wav");
+            // if (this.debugLine) { 
+            //     GAME.graphics.scene.remove(this.debugLine);
+            // }
 
             PHYSICS.getLinearVelocity(this, UTILS.tmpV3);
-            UTILS.tmpV3.normalize(); // direction the craft is moving to
+            UTILS.tmpV3.normalize(); // direction the craft is moving in
 
             let x = this.position.x;
             let y = this.position.y;
             let z = this.position.z;
-
             UTILS.tmpV2.set(x, y, z).add(UTILS.tmpV3.clone().multiplyScalar(5));
 
-            let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
-            obj3d.userData.gameplay.releasedBy = this;
+            RAYCASTER.raycaster2.near = 0.01
+            RAYCASTER.raycaster2.far = 1000
+            //create a blue LineBasicMaterial
+            // const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+            // const points = [];
+            // points.push( UTILS.tmpV2.clone() );
+            // points.push( UTILS.tmpV2.clone().add(UTILS.tmpV3.clone().multiplyScalar(100)) );
+            // const geometry = new THREE.BufferGeometry().setFromPoints( points );
+            // this.debugLine = new THREE.Line( geometry, material );
+            // GAME.graphics.scene.add( this.debugLine );
 
-            // central force
-            PHYSICS.getLinearVelocity(this, UTILS.tmpV1);
-            UTILS.tmpV1.normalize().multiplyScalar(1500);
-            PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1); // .applyQuaternion(this.rotation)
+            RAYCASTER.raycaster2.set(UTILS.tmpV2, UTILS.tmpV3);
+            RAYCASTER.intersects2.length = 0;
+            RAYCASTER.raycaster2.intersectObjects(GAME.graphics.scene.children, true, RAYCASTER.intersects2)
 
-            this.userData.gameplay.weapons.machinegun.released = GAME.time.elapsed;
+            // intersects?.forEach((intersect, index, array) => {
+            //     // [ { distance, point, face, faceIndex, object }, ... ]
+            //     let name = intersect.object?.name;
+            //     console.log(index, name, intersect);
+            // })
+
+            if (RAYCASTER.intersects2?.[0]?.object?.name.startsWith("Mesh_craft_speederD")) {
+                GAME.sounds.play("122103__greatmganga__dshk-01.wav");
+                let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
+                obj3d.userData.gameplay.releasedBy = this;
+    
+                // central force
+                PHYSICS.getLinearVelocity(this, UTILS.tmpV1);
+                UTILS.tmpV1.normalize().multiplyScalar(1500);
+                PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1); // .applyQuaternion(this.rotation)
+    
+                this.userData.gameplay.weapons.machinegun.released = GAME.time.elapsed;
+            }
         }
     }
 
