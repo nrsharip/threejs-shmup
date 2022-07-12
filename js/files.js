@@ -45,7 +45,16 @@ export const ammo = {
         "ammo_shotgun.glb",
         "ammo_sniper.glb",
         "ammo_uzi.glb",
-    ]
+    ],
+
+    // onFileload(filename, gltf) {
+    //     // https://threejs.org/docs/#api/en/math/Color.setRGB
+    //     if (filename == "ammo_machinegun.glb") { 
+    //         for (let child of gltf.scene.children[0].children) {
+    //             child.material.emissive.setRGB(0.8, 0.8, 0.8);
+    //         }
+    //     }
+    // }
 }
 
 export const sounds = {

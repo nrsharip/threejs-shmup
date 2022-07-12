@@ -89,7 +89,7 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         }
 
         let weapons = this.userData.gameplay.weapons;
-        if ((this !== GAME.player.obj3d) && (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta)) {
+        if (false && (this !== GAME.player.obj3d) && (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta)) {
             // if (this.debugLine) { 
             //     GAME.graphics.scene.remove(this.debugLine);
             // }
