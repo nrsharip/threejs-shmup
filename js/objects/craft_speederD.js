@@ -273,18 +273,6 @@ class CraftSpeederD extends AbstractCraft {
         params.score = this.score;
         params.experience = this.experience;
 
-        if (params.weapons) {
-            params.weapons.machinegun.released = this.weapons.machinegun.released;
-            params.weapons.machinegun.delta = this.weapons.machinegun.delta;
-
-            params.weapons.rocket.released = this.weapons.rocket.released;
-            params.weapons.rocket.delta = this.weapons.rocket.delta;
-        } else {
-            // https://www.javascripttutorial.net/object/3-ways-to-copy-objects-in-javascript/
-            // deep copy
-            params.weapons = JSON.parse(JSON.stringify(this.weapons));
-        }
-
         return params;
     }
 
@@ -293,8 +281,6 @@ class CraftSpeederD extends AbstractCraft {
 
     setExperience(experience) { this.experience = experience; }
     getExperience() { return this.experience; }
-
-    getWeapons() { return this.weapons; }
 }
 
 const craft_speederD = new CraftSpeederD("craft_speederD.glb");
