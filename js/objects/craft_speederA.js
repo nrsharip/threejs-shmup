@@ -3,13 +3,20 @@ import AbstractCraft from './craft.js'
 import * as GAME from '../game.js'
 
 class CraftSpeederA extends AbstractCraft {
-    constructor(filename) { super(filename); }
+    constructor(filename) { 
+        super(filename); 
+    
+        this.health = 160;
+        this.damage = 25;
+
+        this.weapons = {
+            machinegun: { released: 0, delta: 200 },
+            rocket: { released: 0, delta: 1000 },
+        }
+    }
 
     update(delta, elapsed) {
         super.update(delta, elapsed);
-
-        this.health = 160;
-        this.damage = 25;
     }
 
     onCollision(other) {

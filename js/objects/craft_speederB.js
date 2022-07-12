@@ -8,6 +8,11 @@ class CraftSpeederB extends AbstractCraft {
     
         this.health = 120;
         this.damage = 20;
+
+        this.weapons = {
+            machinegun: { released: 0, delta: 250 },
+            rocket: { released: 0, delta: 1000 },
+        }
     }
 
     update(delta, elapsed) {

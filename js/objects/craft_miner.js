@@ -8,6 +8,11 @@ class CraftMiner extends AbstractCraft {
     
         this.health = 200;
         this.damage = 30;
+
+        this.weapons = {
+            machinegun: { released: 0, delta: 100 },
+            rocket: { released: 0, delta: 1000 },
+        }
     }
 
     update(delta, elapsed) {
