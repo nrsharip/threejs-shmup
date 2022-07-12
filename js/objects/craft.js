@@ -2,6 +2,7 @@ import AsbtractSpawningObjectManager from '../spawning.js'
 
 import * as THREE from 'three';
 import * as GAME from '../game.js'
+import * as PHYSICS from '../physics.js'
 import * as UTILS from '../utils.js'
 
 const impacts_tin = [
@@ -28,6 +29,11 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         this.health = 100;
         this.destroyed = false;
         this.damage = 10;
+
+        this.weapons = {
+            machinegun: { released: 0, delta: 1000 },
+            rocket: { released: 0, delta: 1000 },
+        }
     }
 
     update(delta, elapsed) {
@@ -62,16 +68,45 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
     onUpdate(delta, elapsed) {
         super.onUpdate(delta, elapsed);
 
-        // if a craft flies further than z = 50 - release to pool
-        if (this.position.z > 50) {
-            this.userData.releaseInstance();
-        }
+        if (this.userData.gameplay.destroyed) { return; }
 
+        // if health drops down lower than 0 - release to pool
         if (this.userData.gameplay.health <= 0) {
             GAME.sounds.play(explosions[Math.floor(Math.random() * explosions.length)]);
 
             this.userData.gameplay.destroyed = true;
             this.userData.releaseInstance();
+            return;
+        }
+
+        // if a craft flies further than z = 50 - release to pool
+        if (this.position.z > 50) {
+            this.userData.releaseInstance();
+            return;
+        }
+
+        let weapons = this.userData.gameplay.weapons;
+        if ((this !== GAME.player.obj3d) && (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta)) {
+            GAME.sounds.play("122103__greatmganga__dshk-01.wav");
+
+            PHYSICS.getLinearVelocity(this, UTILS.tmpV3);
+            UTILS.tmpV3.normalize(); // direction the craft is moving to
+
+            let x = this.position.x;
+            let y = this.position.y;
+            let z = this.position.z;
+
+            UTILS.tmpV2.set(x, y, z).add(UTILS.tmpV3.clone().multiplyScalar(5));
+
+            let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
+            obj3d.userData.gameplay.releasedBy = this;
+
+            // central force
+            PHYSICS.getLinearVelocity(this, UTILS.tmpV1);
+            UTILS.tmpV1.normalize().multiplyScalar(1500);
+            PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1); // .applyQuaternion(this.rotation)
+
+            this.userData.gameplay.weapons.machinegun.released = GAME.time.elapsed;
         }
     }
 
@@ -107,6 +142,18 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
         params.destroyed = this.destroyed;
         params.damage = this.damage;
 
+        if (params.weapons) {
+            params.weapons.machinegun.released = this.weapons.machinegun.released;
+            params.weapons.machinegun.delta = this.weapons.machinegun.delta;
+
+            params.weapons.rocket.released = this.weapons.rocket.released;
+            params.weapons.rocket.delta = this.weapons.rocket.delta;
+        } else {
+            // https://www.javascripttutorial.net/object/3-ways-to-copy-objects-in-javascript/
+            // deep copy
+            params.weapons = JSON.parse(JSON.stringify(this.weapons));
+        }
+
         return params;
     }
 
@@ -118,4 +165,6 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
     setDamage(damage) { this.damage = damage; }
     getDamage() { return this.damage; }
+
+    getWeapons() { return this.weapons; }
 }

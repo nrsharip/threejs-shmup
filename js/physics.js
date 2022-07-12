@@ -147,13 +147,23 @@ function setLinearVelocity(obj3d, vector) {
     if (!obj3d) { return; }
     const rigidBody = obj3d.userData.rigidBody;
     rigidBody.setLinearVelocity( new Ammo.btVector3( vector.x, vector.y, vector.z ) ); 
-    rigidBody.setAngularVelocity( new Ammo.btVector3( 0,0,0 ) );
+    rigidBody.setAngularVelocity( new Ammo.btVector3( 0, 0, 0 ) );
+}
+
+function getLinearVelocity(obj3d, vector) {
+    if (!obj3d) { return; }
+    const rigidBody = obj3d.userData.rigidBody;
+    const btVector3 = rigidBody.getLinearVelocity();
+    //console.log(btVector3);
+    vector.x = btVector3.x();
+    vector.y = btVector3.y();
+    vector.z = btVector3.z();
 }
 
 function setAngularVelocity(obj3d, vector) {
     if (!obj3d) { return; }
     const rigidBody = obj3d.userData.rigidBody;
-    rigidBody.setLinearVelocity( new Ammo.btVector3( vector.x, vector.y, vector.z ) ); 
+    rigidBody.setLinearVelocity( new Ammo.btVector3( 0, 0, 0 ) ); 
     rigidBody.setAngularVelocity( new Ammo.btVector3( vector.x, vector.y, vector.z ) );
 }
 
@@ -315,6 +325,7 @@ export {
     makeTranslationAndRotation,
 
     setLinearVelocity,
+    getLinearVelocity,
     setAngularVelocity,
     setLinearAndAngularVelocity,
 
