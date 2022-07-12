@@ -183,16 +183,16 @@ function gameStarted() {
             
     // Non-player characters
     craft_miner.setHealth(200);
-    craft_miner.setSpawnDelta(1600);
+    craft_miner.setSpawnDelta(3200);
     craft_miner.setSpawnEnabled(false);
     craft_speederA.setHealth(160);
-    craft_speederA.setSpawnDelta(1200);
+    craft_speederA.setSpawnDelta(2400);
     craft_speederA.setSpawnEnabled(false);
     craft_speederB.setHealth(120);
-    craft_speederB.setSpawnDelta(800);
+    craft_speederB.setSpawnDelta(1600);
     craft_speederB.setSpawnEnabled(false);
     craft_speederC.setHealth(80);
-    craft_speederC.setSpawnDelta(400);
+    craft_speederC.setSpawnDelta(800);
     craft_speederC.setSpawnEnabled(true);
 
     // Player
