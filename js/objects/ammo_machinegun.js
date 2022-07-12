@@ -17,8 +17,8 @@ class AmmoMachinegun extends AbstractAmmo {
 
     onUpdate(delta, elapsed) { 
         super.onUpdate(delta, elapsed);
-        // if bullet exists more than 5 sec - remove it
-        if (this.userData.timeElapsed > 5000) {
+        // if bullet exists more than 2 sec - remove it
+        if (this.userData.timeElapsed > 2000) {
             this.userData.releaseInstance();
         }
     }

@@ -60,7 +60,9 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
                 // avoiding self-inflicted damage
                 if (this !== other.userData.gameplay.releasedBy) {
                     this.userData.gameplay.health -= damage;
-                    other.userData.gameplay.releasedBy.userData.gameplay.score += damage;
+                    if (other.userData.gameplay.releasedBy === GAME.player.obj3d) {
+                        other.userData.gameplay.releasedBy.userData.gameplay.score += damage;
+                    }
                 }
             }
         }
@@ -123,7 +125,7 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
             if (RAYCASTER.intersects2?.[0]?.object?.name.startsWith("Mesh_craft_speederD")) {
                 GAME.sounds.play("122103__greatmganga__dshk-01.wav");
-                let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2);
+                let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2, this.quaternion);
                 obj3d.userData.gameplay.releasedBy = this;
     
                 // central force
