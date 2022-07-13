@@ -2,6 +2,8 @@
 
 import * as THREE from 'three';
 
+import Stats from 'https://unpkg.com/three@0.142.0/examples/jsm/libs/stats.module.js';
+
 import * as YUKA from './lib/yuka/f7503a588747128eaa180fa9379b59419129164c/yuka.module.js';
 
 import * as RAYCASTER from './raycaster.js';
@@ -61,6 +63,9 @@ GAME.state.phase = GAME.PHASES.INIT;
 
 let ground = undefined;
 function init() {
+    GAME.state.stats = new Stats();
+    document.body.appendChild( GAME.state.stats.dom );
+
     GAME.view.init(20, -100);
     // GRAPHICS INIT
     GAME.graphics.renderer = GRAPHICS.setupRenderer('#mainCanvas');
@@ -183,16 +188,16 @@ function gameStarted() {
             
     // Non-player characters
     craft_miner.setHealth(200);
-    craft_miner.setSpawnDelta(3200);
+    craft_miner.setSpawnDelta(3200); // on max level: 1422
     craft_miner.setSpawnEnabled(false);
     craft_speederA.setHealth(160);
-    craft_speederA.setSpawnDelta(2400);
+    craft_speederA.setSpawnDelta(2400); // on max level: 711
     craft_speederA.setSpawnEnabled(false);
     craft_speederB.setHealth(120);
-    craft_speederB.setSpawnDelta(1600);
+    craft_speederB.setSpawnDelta(1600); // on max level: 315
     craft_speederB.setSpawnEnabled(false);
     craft_speederC.setHealth(80);
-    craft_speederC.setSpawnDelta(800);
+    craft_speederC.setSpawnDelta(800); // on max level: 100
     craft_speederC.setSpawnEnabled(true);
 
     // Player
@@ -260,6 +265,7 @@ function render(timeElapsed) {
         UTILS.getCameraFrustum(GAME.graphics.camera, GAME.graphics.camera.frustum);
     }
 
+    GAME.state.stats.update();
     GAME.graphics.renderer.render( GAME.graphics.scene, GAME.graphics.camera );
 };
 

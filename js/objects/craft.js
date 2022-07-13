@@ -23,6 +23,11 @@ const explosions = [
     "587189__derplayer__explosion-05.wav", // https://freesound.org/people/derplayer/sounds/587190/
 ]
 
+const tmpV3$1 = new THREE.Vector3();
+const tmpV3$2 = new THREE.Vector3();
+const tmpV3$3 = new THREE.Vector3();
+const tmpV3$4 = new THREE.Vector3();
+
 export default class AbstractCraft extends AsbtractSpawningObjectManager {
     constructor(filename) { 
         super(filename); 
@@ -88,52 +93,80 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
             return;
         }
 
-        let weapons = this.userData.gameplay.weapons;
-        if (false && (this !== GAME.player.obj3d) && (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta)) {
-            // if (this.debugLine) { 
-            //     GAME.graphics.scene.remove(this.debugLine);
-            // }
+        const weapons = this.userData.gameplay.weapons;
+        if (!GAME.player.obj3d.userData.gameplay.destroyed 
+            && (this !== GAME.player.obj3d) 
+            && (GAME.time.elapsed - weapons.machinegun.released > weapons.machinegun.delta)) {
 
-            PHYSICS.getLinearVelocity(this, UTILS.tmpV3);
-            UTILS.tmpV3.normalize(); // direction the craft is moving in
+            PHYSICS.getLinearVelocity(this, tmpV3$3);
+            tmpV3$3.normalize();            // direction the craft is moving in
+            tmpV3$4.copy(tmpV3$3).negate(); // direction opposite to the craft is moving in to
+
+            RAYCASTER.raycaster2.near = 0.01
+            RAYCASTER.raycaster2.far = 1000
+
+            let crafts = [
+                ...GAME.instances["craft_miner.glb"].inuse,
+                ...GAME.instances["craft_speederA.glb"].inuse,
+                ...GAME.instances["craft_speederB.glb"].inuse,
+                ...GAME.instances["craft_speederC.glb"].inuse,
+                ...GAME.instances["craft_speederD.glb"].inuse
+            ]
+
+            let friendlyFire = false;
+            for (let craft of crafts) {
+                if (craft !== this && craft !== GAME.player.obj3d) {
+                    RAYCASTER.raycaster2.set(craft.position, tmpV3$4);
+                    RAYCASTER.intersects2.length = 0;
+                    RAYCASTER.raycaster2.intersectObject(this, true, RAYCASTER.intersects2);
+                    if (RAYCASTER.intersects2.length > 0) {
+                        friendlyFire = true;
+                        break;
+                    }
+                }
+            }
 
             let x = this.position.x;
             let y = this.position.y;
             let z = this.position.z;
-            UTILS.tmpV2.set(x, y, z).add(UTILS.tmpV3.clone().multiplyScalar(5));
+            tmpV3$2.set(x, y, z).add(tmpV3$3.clone().multiplyScalar(5));
 
-            RAYCASTER.raycaster2.near = 0.01
-            RAYCASTER.raycaster2.far = 1000
-            //create a blue LineBasicMaterial
-            // const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+            // UNCOMMENT FOR A RAYCAST DEBUG LINE: creates a blue LineBasicMaterial
             // const points = [];
-            // points.push( UTILS.tmpV2.clone() );
-            // points.push( UTILS.tmpV2.clone().add(UTILS.tmpV3.clone().multiplyScalar(100)) );
+            // points.push( tmpV3$2.clone() );
+            // points.push( tmpV3$2.clone().add(tmpV3$3.clone().multiplyScalar(100)) );
             // const geometry = new THREE.BufferGeometry().setFromPoints( points );
+            // const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+            // if (this.debugLine) { 
+            //     GAME.graphics.scene.remove(this.debugLine);
+            // }
             // this.debugLine = new THREE.Line( geometry, material );
             // GAME.graphics.scene.add( this.debugLine );
 
-            RAYCASTER.raycaster2.set(UTILS.tmpV2, UTILS.tmpV3);
+            RAYCASTER.raycaster2.set(tmpV3$2, tmpV3$3);
             RAYCASTER.intersects2.length = 0;
-            RAYCASTER.raycaster2.intersectObjects(GAME.graphics.scene.children, true, RAYCASTER.intersects2)
+            RAYCASTER.raycaster2.intersectObject(GAME.player.obj3d, true, RAYCASTER.intersects2)
 
-            // intersects?.forEach((intersect, index, array) => {
+            // THIS GIVES A SIGNIFICANT PERFOMANCE OVERHEAD
+            // RAYCASTER.raycaster2.intersectObjects(crafts, true, RAYCASTER.intersects2)
+            // UNCOMMENT FOR A RAYCAST INTERSECTIONS:
+            // RAYCASTER.intersects2?.forEach((intersect, index, array) => {
             //     // [ { distance, point, face, faceIndex, object }, ... ]
             //     let name = intersect.object?.name;
             //     console.log(index, name, intersect);
             // })
+            // if (RAYCASTER.intersects2?.[0]?.object?.name.startsWith("Mesh_craft_speederD")) { ... }
 
-            if (RAYCASTER.intersects2?.[0]?.object?.name.startsWith("Mesh_craft_speederD")) {
+            if (!friendlyFire && RAYCASTER.intersects2.length > 0) {
                 GAME.sounds.play("122103__greatmganga__dshk-01.wav");
-                let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, UTILS.tmpV2, this.quaternion);
+
+                let obj3d = GAME.managers.ammo_machinegun.addInstanceTo(GAME.graphics.scene, tmpV3$2, this.quaternion);
                 obj3d.userData.gameplay.releasedBy = this;
     
                 // central force
-                PHYSICS.getLinearVelocity(this, UTILS.tmpV1);
-                UTILS.tmpV1.normalize().multiplyScalar(1500);
-                PHYSICS.applyCentralForce(obj3d, UTILS.tmpV1); // .applyQuaternion(this.rotation)
-    
-                this.userData.gameplay.weapons.machinegun.released = GAME.time.elapsed;
+                PHYSICS.applyCentralForce(obj3d, tmpV3$3.multiplyScalar(1500));
+
+                weapons.machinegun.released = GAME.time.elapsed;
             }
         }
     }
@@ -146,21 +179,21 @@ export default class AbstractCraft extends AsbtractSpawningObjectManager {
 
     spawnParameters() {
         let frustum = GAME.graphics.camera.frustum;
-        frustum.planes[0].intersectLine(GAME.view.far.line, UTILS.tmpV1); // left side
-        frustum.planes[1].intersectLine(GAME.view.far.line, UTILS.tmpV2); // right side
+        frustum.planes[0].intersectLine(GAME.view.far.line, tmpV3$1); // left side
+        frustum.planes[1].intersectLine(GAME.view.far.line, tmpV3$2); // right side
 
         let tmp1 = new THREE.Object3D();
         // position
-        tmp1.position.set(2 * UTILS.tmpV2.x * Math.random() - UTILS.tmpV2.x, 0, GAME.view.far.center.z);
+        tmp1.position.set(2 * tmpV3$2.x * Math.random() - tmpV3$2.x, 0, GAME.view.far.center.z);
         // rotation
         tmp1.lookAt(GAME.player.obj3d.position);
         // linear velocity
-        UTILS.tmpV1.set(0, 0, 10).applyQuaternion(tmp1.quaternion);
+        tmpV3$1.set(0, 0, 10).applyQuaternion(tmp1.quaternion);
         // angular velocity
-        UTILS.tmpV2.set(0, 0, 0);
+        tmpV3$2.set(0, 0, 0);
 
         tmp1.quaternion.multiply(UTILS.quatDegrees180); // turning 180 degrees so the models face towards the player
-        return [tmp1.position, tmp1.quaternion, UTILS.tmpV1.clone(), UTILS.tmpV2.clone()];
+        return [tmp1.position, tmp1.quaternion, tmpV3$1.clone(), tmpV3$2.clone()];
     }
 
     resetGamePlayParams(params) {

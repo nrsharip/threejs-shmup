@@ -13,6 +13,7 @@ class AmmoMachinegun extends AbstractAmmo {
     }
 
     onCollision(other) {
+        super.onCollision(other);
     }
 
     onUpdate(delta, elapsed) { 

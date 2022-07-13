@@ -93,10 +93,11 @@ class CraftSpeederD extends AbstractCraft {
         // level up?
         if (Math.floor(sc / 100) > xp) {
             this.userData.gameplay.experience = xp = Math.floor(sc / 100);
-            // reducing the delta for bullet release (up to 1 millisecond - that's maximum)
-            if (this.userData.gameplay.weapons.machinegun.delta > 1) { 
+            // reducing the delta for bullet release (up to 20 milliseconds - 
+            // that's maximum for bullets not to collide on start)
+            if (this.userData.gameplay.weapons.machinegun.delta > 20) { 
                 this.userData.gameplay.weapons.machinegun.delta -= 0.5; 
-            } else if (this.userData.gameplay.weapons.rocket.delta > 301) { 
+            } else if (this.userData.gameplay.weapons.rocket.delta > 300) { 
                 this.userData.gameplay.weapons.rocket.delta -= 2; 
             }
 

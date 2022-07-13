@@ -13,6 +13,7 @@ export default class AbstractAmmo extends AsbtractGameObjectManager {
     }
     
     onCollision(other) {
+        if (!other || !other.userData) { console.log("ERROR: the object is unrecognizable: " + other); return; }
     }
 
     onUpdate(delta, elapsed) {

@@ -21,6 +21,8 @@ const PHASES = {
 }
 
 const state = { 
+    stats: undefined,
+
     _phase: undefined,
 
     set phase(p) {
