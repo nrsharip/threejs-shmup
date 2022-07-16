@@ -36,7 +36,7 @@ if ( !WebGLCheck.isWebGLAvailable() ) {
 
 window.GAME = GAME;
 
-GAME.state.onPhaseChange = function(phase) {
+GAME.state.onPhaseChange.push( function(phase) {
     switch (phase) {
         case GAME.PHASES.INIT:
             init();
@@ -57,7 +57,7 @@ GAME.state.onPhaseChange = function(phase) {
         case GAME.PHASES.GAME_RESUMED:
             break;
     }
-}
+});
 
 GAME.state.phase = GAME.PHASES.INIT;
 
@@ -257,6 +257,8 @@ function render(timeElapsed) {
             break;
     }
 
+    GAME.callbacks?.onUpdate?.(timeDelta, timeElapsed);
+
     // see https://threejs.org/manual/#en/responsive
     if (UTILS.resizeRendererToDisplaySize(GAME.graphics.renderer)) {
         const canvas = GAME.graphics.renderer.domElement;
@@ -332,6 +334,8 @@ function onKeyDown(event) {
         case GAME.PHASES.GAME_PAUSED:
             break;
     }
+
+    GAME.callbacks?.onKeyDown?.(event);
 }
 
 function onPausePressed() {

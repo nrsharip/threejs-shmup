@@ -16,6 +16,7 @@ const PHASES = {
     GAME_STARTED: 4,
     GAME_PAUSED: 5,
     GAME_RESUMED: 6,
+    GAME_OVER: 7,
 
     getKey(value) { return Object.keys(this).find(key => this[key] === value) }
 }
@@ -29,7 +30,7 @@ const state = {
         if (Object.values(PHASES).includes(p)) {
             console.log("Game phase: " + PHASES.getKey(p));
             this._phase = p;
-            this?.onPhaseChange?.(p);
+            for (let callback of this.onPhaseChange) { callback(p); }
         } else {
             throw new Error("Unknown game phase: " + p + ", known: " + Object.values(PHASES));
         }
@@ -37,7 +38,7 @@ const state = {
 
     get phase() { return this._phase; },
 
-    onPhaseChange: undefined,
+    onPhaseChange: [],
 };
 
 const instances = {
@@ -149,9 +150,14 @@ const view = {
     }
 }
 
+const callbacks = {
+    onUpdate: undefined,
+    onKeyDown: undefined,
+}
+
 const player = {};
 const time = { delta: 0, elapsed: 0 };
 
 const yuka = {}
 
-export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, view, player, time, yuka }
+export { graphics, PHASES, state, models, instances, audioListener, audioBuffers, sounds, managers, view, callbacks, player, time, yuka }
